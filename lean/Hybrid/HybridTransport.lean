@@ -1,8 +1,11 @@
--- Hybrid.HybridTransport
--- Hybrid transport operator combining geometric and spectral effects.
+import Geometry.Manifold
+import Spectral.Bundle
+import Hybrid.HybridState
 
+-- Hybrid transport operator combining geometric and spectral effects.
 structure HybridTransport
   (M : Manifold)
   (B : SpectralBundle M)
   :=
   (step : HybridState M B → HybridState M B)
+  (consistent : Prop)
