@@ -6,10 +6,37 @@ import Runtime.RuntimeOperator
 /-
   Proof Strategy (Invariant Preservation):
 
-  1. Identify the invariant encoded in HybridState.
-  2. Show geometric transport preserves the base invariant.
-  3. Show spectral operators preserve fiber invariants.
-  4. Combine via hybrid consistency to show R.apply preserves invariants.
+  Goal:
+    Show that the runtime operator R preserves the invariant encoded in HybridState.
+
+  Structure:
+
+    1. Identify the invariant:
+       - The invariant is encoded jointly in the geometric component (M.Point)
+         and the spectral fiber (B.Fiber p).
+       - We treat it abstractly as a property of HybridState M B.
+
+    2. Geometric Preservation:
+       - Use Transport.step to show that the geometric component of the invariant
+         is preserved under geometric transport.
+       - R.apply uses geometric transport implicitly through HybridTransport.
+
+    3. Spectral Preservation:
+       - Use LocalOperator.op to show that the spectral component of the invariant
+         is preserved under spectral action.
+       - Boundedness ensures no collapse or distortion of the fiber invariant.
+
+    4. Hybrid Consistency:
+       - HybridTransport.step combines geometric and spectral effects.
+       - Use H.consistent to show that the combined action preserves the invariant.
+
+    5. Runtime Preservation:
+       - R.apply uses HybridTransport internally.
+       - Use R.protects to ensure that invariant-preserving behavior is maintained
+         under iteration.
+
+    6. Conclusion:
+       - The invariant is preserved globally under R.apply.
 -/
 
 -- Invariant preservation theorem scaffold.
@@ -19,4 +46,10 @@ theorem invariant_preservation
   (R : RuntimeOperator M B)
   : True :=
 by
+  -- Step 1: Identify the invariant in HybridState.
+  -- Step 2: Show geometric transport preserves the base invariant.
+  -- Step 3: Show spectral operators preserve fiber invariants.
+  -- Step 4: Use hybrid consistency to combine geometric + spectral preservation.
+  -- Step 5: Use runtime protection to ensure preservation under iteration.
+  -- Step 6: Conclude global invariant preservation.
   admit
