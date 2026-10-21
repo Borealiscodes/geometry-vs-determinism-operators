@@ -1,0 +1,66 @@
+% ------------------------------------------------------------
+% Geometry Module
+% Deep Mathematical Spine for Structural AI Operators
+% ------------------------------------------------------------
+
+\section{Differential Geometry Foundations}
+
+\subsection{Manifolds}
+\begin{definition}
+A \emph{smooth manifold} $\M$ of dimension $n$ is a topological space
+equipped with an atlas of coordinate charts whose transition maps are $C^\infty$.
+\end{definition}
+
+% Placeholder for additional manifold structure
+% (charts, atlases, smooth maps, embeddings, immersions)
+
+\subsection{Tangent Spaces and Vector Fields}
+\begin{definition}
+For a point $p \in \M$, the \emph{tangent space} $T_p\M$ is the vector space
+of derivations acting on smooth functions $C^\infty(\M)$ at $p$.
+\end{definition}
+
+% Placeholder for vector fields, pushforward, pullback
+
+\subsection{Connections and Parallel Transport}
+\begin{definition}
+A \emph{connection} $\nabla$ on $\M$ is a map assigning to each vector field
+$X$ a derivation $\nabla_X$ acting on vector fields, satisfying linearity and
+the Leibniz rule.
+\end{definition}
+
+% Placeholder for Levi-Civita connection, torsion-free, metric compatibility
+
+\subsection{Geodesics}
+\begin{definition}
+A smooth curve $\gamma(t)$ is a \emph{geodesic} if it satisfies
+$\nabla_{\dot{\gamma}} \dot{\gamma} = 0$.
+\end{definition}
+
+% Placeholder for existence, uniqueness, exponential map
+
+\subsection{Holonomy}
+\begin{definition}
+The \emph{holonomy group} $\Hol(p)$ at a point $p \in \M$ is the group of
+parallel transport maps obtained by transporting vectors along closed loops
+based at $p$.
+\end{definition}
+
+% Placeholder for holonomy decomposition, restricted holonomy, drift tensors
+
+\subsection{Curvature}
+\begin{definition}
+The \emph{Riemann curvature tensor} is defined by
+\[
+R(X,Y)Z = \nabla_X\nabla_Y Z - \nabla_Y\nabla_X Z - \nabla_{[X,Y]} Z.
+\]
+\end{definition}
+
+% Placeholder for sectional curvature, Ricci curvature, scalar curvature
+
+\subsection{Holonomy Drift (Structural AI)}
+% Placeholder for your formal definition of holonomy drift tensors
+% and their role in geometric interpretability
+
+\subsection{Notes}
+\input{geometry-notes.tex}
