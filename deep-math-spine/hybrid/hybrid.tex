@@ -3,60 +3,819 @@
 % Deep Mathematical Spine for Structural AI Operators
 % ------------------------------------------------------------
 
-\section{Hybrid Geometric–Discrete Operators}
+\section{Hybrid Transition Operators}
 
-\subsection{Manifold–Graph Embeddings}
+\subsection{Hybrid State Space}
+
 \begin{definition}
-A \emph{manifold–graph embedding} is a pair
+A \emph{hybrid state} is a pair $(p,v)$ where
+\begin{enumerate}
+    \item $p \in \M$ is a geometric state in a Riemannian manifold,
+    \item $v \in V$ is a discrete state in a finite graph $G = (V,E)$.
+\end{enumerate}
+The hybrid state space is
 \[
-(\iota, G)
+\mathcal{H} = \M \times V.
 \]
-where $\iota : V(G) \to \M$ maps graph vertices into a smooth manifold
-$\M$, and edges correspond to geodesic or near-geodesic relations under
-$\iota$.
 \end{definition}
 
-% Placeholder for embedding stability, distortion bounds
-
-\subsection{Hybrid Transition Operators}
-\begin{definition}
-Given a manifold $\M$ and a discrete state graph $G$, a
-\emph{hybrid transition operator} $H$ acts on pairs $(p, q)$ where
-$p \in \M$ and $q \in V(G)$, producing
+\begin{lemma}
+If $\iota : V \to \M$ is a manifold--graph embedding, then $\mathcal{H}$
+admits a canonical diagonal embedding
 \[
-H(p,q) = \big( \Phi(p,q),\; \delta(q,a) \big)
+\Delta_\iota(v) = (\iota(v), v).
 \]
-for some geometric update rule $\Phi$ and discrete transition $\delta$.
-\end{definition}
+\end{lemma}
 
-% Placeholder for operator chains, commutation relations
+\subsection{Hybrid Transition Structure}
 
-\subsection{Holonomy Drift Tensor}
 \begin{definition}
-The \emph{holonomy drift tensor} $\mathcal{D}$ is a tensor field on $\M$
-capturing deviation between geometric parallel transport and hybrid
-transition-induced transport along embedded graph paths.
-\end{definition}
-
-% Placeholder for drift decomposition, stability, curvature dependence
-
-\subsection{Spectral–Duty Hybrid Operators}
-\begin{definition}
-A \emph{spectral–duty hybrid operator} combines spectral propagation on
-$\M$ with discrete duty-chain evolution on $G$, producing updates of the
-form
+A \emph{hybrid transition operator} is a map
 \[
-S(p,q) = \big( e^{-t\Delta} p,\; T\mu(q) \big)
+H : \mathcal{H} \to \mathcal{H}
 \]
-where $e^{-t\Delta}$ is the heat semigroup and $T$ is a discrete
-transition operator.
+of the form
+\[
+H(p,v) = \big( H_\M(p,v),\, H_G(v) \big),
+\]
+where
+\begin{enumerate}
+    \item $H_\M(p,v)$ is a geometric update,
+    \item $H_G(v)$ is a discrete update.
+\end{enumerate}
 \end{definition}
 
-% Placeholder for commutation relations, hybrid stability bounds
+\begin{lemma}
+If $H_G$ preserves adjacency in $G$, then hybrid transitions respect the
+graph structure.
+\end{lemma}
 
-\subsection{Hybrid Stability Theorems}
-% Placeholder for your formal stability theorems,
-% bounded drift, collapse avoidance, and hybrid invariants
+\subsection{Geometric Component}
 
-\subsection{Notes}
-\input{hybrid-notes.tex}
+\begin{definition}
+Let $\gamma_{p,v}$ be a curve in $\M$ determined by the discrete state $v$.
+The \emph{geometric component} of a hybrid transition is
+\[
+H_\M(p,v) = P_{\gamma_{p,v}}(p),
+\]
+where $P_{\gamma_{p,v}}$ denotes parallel transport or a geometric update
+along $\gamma_{p,v}$.
+\end{definition}
+
+\begin{lemma}
+If $\gamma_{p,v}$ is chosen to be a minimizing geodesic, then
+\[
+H_\M(p,v) = \exp_p(X_v)
+\]
+for some tangent vector $X_v$ depending on $v$.
+\end{lemma}
+
+\subsection{Spectral Component}
+
+\begin{definition}
+Let $\mathcal{B}_\Lambda$ be a spectral bundle at scale $\Lambda$.  
+The \emph{spectral component} of a hybrid transition is
+\[
+H_\Lambda(p,v)
+= T_{\gamma_{p,v}} \big( \mathcal{B}_\Lambda(p) \big),
+\]
+where $T_{\gamma_{p,v}}$ is spectral bundle transport.
+\end{definition}
+
+\begin{lemma}
+If curvature is bounded, then
+\[
+\| H_\Lambda(p,v) - \mathcal{B}_\Lambda(p) \|
+\le C \cdot \mathrm{length}(\gamma_{p,v}).
+\]
+\end{lemma}
+
+\subsection{Discrete Component}
+
+\begin{definition}
+The \emph{discrete component} of a hybrid transition is a graph update
+\[
+H_G : V \to V
+\]
+satisfying
+\[
+(v,w) \in E \implies (H_G(v), H_G(w)) \in E.
+\]
+\end{definition}
+
+\begin{lemma}
+If $H_G$ is deterministic and adjacency-preserving, then hybrid transitions
+are well-defined on $\mathcal{H}$.
+\end{lemma}
+
+\subsection{Hybrid Operator Decomposition}
+
+\begin{definition}
+A hybrid transition operator decomposes as
+\[
+H = H_\M \oplus H_\Lambda \oplus H_G.
+\]
+\end{definition}
+
+\begin{theorem}
+If $H_\M$, $H_\Lambda$, and $H_G$ are each stable, then the hybrid operator
+$H$ is stable:
+\[
+\| H(p,v) - H(q,w) \|
+\le C \big( d_\M(p,q) + d_G(v,w) \big).
+\]
+\end{theorem}
+
+\begin{remark}
+This decomposition is the structural backbone for drift decomposition and
+spectral–duty operators in later sections.
+\end{remark}
+
+\subsection{Consistency Conditions}
+
+\begin{definition}
+A hybrid operator $H$ is \emph{geometrically consistent} if
+\[
+H_\M(\iota(v),v) = \iota(H_G(v)).
+\]
+\end{definition}
+
+\begin{lemma}
+If $\iota$ is geodesically consistent and $H_G$ follows graph edges, then
+$H$ is geometrically consistent.
+\end{lemma}
+
+\begin{theorem}
+If $H$ is geometrically consistent, then hybrid transitions preserve
+manifold--graph embeddings:
+\[
+H(\Delta_\iota(v)) = \Delta_\iota(H_G(v)).
+\]
+\end{theorem}
+
+\begin{remark}
+This consistency condition is required for defining the holonomy drift
+tensor in hybrid systems.
+\end{remark}
+
+\section{Drift Decomposition}
+
+\subsection{Hybrid Drift}
+
+\begin{definition}
+Let $H : \mathcal{H} \to \mathcal{H}$ be a hybrid transition operator.
+The \emph{hybrid drift} at a state $(p,v)$ is
+\[
+\mathrm{Drift}(p,v)
+= H(p,v) - P_{\gamma_{p,v}}(p,v),
+\]
+where $P_{\gamma_{p,v}}$ denotes geometric parallel transport along the
+curve $\gamma_{p,v}$ determined by the discrete state $v$.
+\end{definition}
+
+\begin{lemma}
+Hybrid drift vanishes if and only if hybrid transitions are geometrically
+faithful.
+\end{lemma}
+
+\subsection{Geometric Drift}
+
+\begin{definition}
+The \emph{geometric drift} at $p \in \M$ is the deviation
+\[
+\mathcal{D}_\M(p,v)
+= H_\M(p,v) - P_{\gamma_{p,v}}(p).
+\]
+\end{definition}
+
+\begin{lemma}
+If $H_\M$ is smooth and agrees with parallel transport to first order,
+then $\mathcal{D}_\M$ is tensorial:
+\[
+\mathcal{D}_\M(p,v) = \mathcal{D}_p(X_v),
+\]
+where $X_v$ is the tangent generator of $\gamma_{p,v}$.
+\end{lemma}
+
+\begin{remark}
+This is precisely the holonomy drift tensor introduced in the geometry
+module.
+\end{remark}
+
+\subsection{Spectral Drift}
+
+\begin{definition}
+Let $\mathcal{B}_\Lambda$ be a spectral bundle.  
+The \emph{spectral drift} at $(p,v)$ is
+\[
+\mathcal{D}_\Lambda(p,v)
+= H_\Lambda(p,v) - T_{\gamma_{p,v}}(\mathcal{B}_\Lambda(p)),
+\]
+where $T_{\gamma_{p,v}}$ is spectral bundle transport.
+\end{definition}
+
+\begin{lemma}
+If curvature is bounded, then
+\[
+\|\mathcal{D}_\Lambda(p,v)\|
+\le C \cdot \mathrm{length}(\gamma_{p,v}).
+\]
+\end{lemma}
+
+\begin{remark}
+Spectral drift measures how hybrid transitions distort frequency-localized
+geometric information.
+\end{remark}
+
+\subsection{Discrete Drift}
+
+\begin{definition}
+The \emph{discrete drift} at $v \in V$ is
+\[
+\mathcal{D}_G(v)
+= H_G(v) - v.
+\]
+\end{definition}
+
+\begin{lemma}
+If $H_G$ preserves adjacency, then discrete drift is bounded by graph
+distance:
+\[
+d_G(v, H_G(v)) \le 1.
+\]
+\end{lemma}
+
+\subsection{Full Drift Decomposition}
+
+\begin{theorem}
+Hybrid drift decomposes as
+\[
+\mathrm{Drift}(p,v)
+= \mathcal{D}_\M(p,v)
++ \mathcal{D}_\Lambda(p,v)
++ \mathcal{D}_G(v).
+\]
+\end{theorem}
+
+\begin{lemma}
+Each component is independent:
+\[
+\mathcal{D}_\M = 0 \implies \text{geometric faithfulness},
+\]
+\[
+\mathcal{D}_\Lambda = 0 \implies \text{spectral faithfulness},
+\]
+\[
+\mathcal{D}_G = 0 \implies \text{discrete faithfulness}.
+\]
+\]
+\end{lemma}
+
+\subsection{Drift Invariants}
+
+\begin{definition}
+A quantity $\mathcal{I}(p,v)$ is a \emph{drift invariant} if
+\[
+\mathcal{I}(p,v) = \mathcal{I}(H(p,v))
+\]
+whenever $\mathrm{Drift}(p,v) = 0$.
+\end{definition}
+
+\begin{lemma}
+If geometric drift vanishes, drift invariants coincide with holonomy
+invariants.
+\end{lemma}
+
+\begin{theorem}
+If spectral drift vanishes, drift invariants are constant on spectral
+bundles:
+\[
+\mathcal{I}(p,v) = \mathcal{I}(q,v)
+\quad\text{whenever}\quad
+\mathcal{B}_\Lambda(p) = \mathcal{B}_\Lambda(q).
+\]
+\end{theorem}
+
+\subsection{Drift Stability}
+
+\begin{definition}
+Hybrid drift is \emph{stable} if
+\[
+\|\mathrm{Drift}(p,v)\|
+\le C \big( d_\M(p,q) + d_G(v,w) \big)
+\]
+for all $(p,v),(q,w) \in \mathcal{H}$.
+\end{definition}
+
+\begin{lemma}
+If each drift component is stable, then hybrid drift is stable.
+\end{lemma}
+
+\begin{theorem}
+If hybrid transitions are geometrically consistent and spectrally stable,
+then drift is uniformly bounded:
+\[
+\|\mathrm{Drift}(p,v)\| \le C.
+\]
+\end{theorem}
+
+\begin{remark}
+This boundedness is the foundation for collapse-avoidance and cognitive
+load stabilization in the AI-operators module.
+\end{remark}
+
+\section{Spectral--Duty Operator}
+
+\subsection{Duty Chains}
+
+\begin{definition}
+Let $G = (V,E)$ be a finite graph.  
+A \emph{duty chain} is a sequence of vertices
+\[
+v_0 \to v_1 \to \cdots \to v_k
+\]
+such that each $(v_i, v_{i+1}) \in E$.  
+The length of the chain is $k$.
+\end{definition}
+
+\begin{lemma}
+If $H_G$ is adjacency-preserving, then hybrid transitions map duty chains
+to duty chains.
+\end{lemma}
+
+\begin{remark}
+Duty chains encode discrete task progression and form the discrete backbone
+of hybrid operators.
+\end{remark}
+
+\subsection{Spectral Duty Weight}
+
+\begin{definition}
+Let $\mathcal{B}_\Lambda$ be a spectral bundle.  
+The \emph{spectral duty weight} of a vertex $v$ is
+\[
+w_\Lambda(v)
+= \| \mathcal{B}_\Lambda(\iota(v)) \|.
+\]
+\end{definition}
+
+\begin{lemma}
+If curvature is bounded, then spectral duty weights vary smoothly along
+geodesically consistent embeddings:
+\[
+|w_\Lambda(v) - w_\Lambda(w)|
+\le C d_G(v,w).
+\]
+\end{lemma}
+
+\begin{remark}
+Spectral duty weights measure how much frequency-localized geometric
+information is associated with each discrete state.
+\end{remark}
+
+\subsection{Duty Transition Operator}
+
+\begin{definition}
+Let $v \to w$ be a duty transition.  
+The \emph{duty transition operator} is
+\[
+D(v,w) : \mathcal{B}_\Lambda(\iota(v)) \to \mathcal{B}_\Lambda(\iota(w))
+\]
+defined by
+\[
+D(v,w) = T_{\gamma_{\iota(v),\iota(w)}},
+\]
+where $T_{\gamma}$ is spectral bundle transport along the geodesic
+connecting $\iota(v)$ and $\iota(w)$.
+\end{definition}
+
+\begin{lemma}
+If $\iota$ is geodesically consistent, then
+\[
+\| D(v,w) - \mathrm{Id} \|
+\le C d_G(v,w).
+\]
+\end{lemma}
+
+\subsection{Spectral--Duty Fusion}
+
+\begin{definition}
+Let $H$ be a hybrid transition operator.  
+The \emph{spectral--duty operator} at scale $\Lambda$ is
+\[
+\mathcal{S}_\Lambda(p,v)
+= S_t\big( D(v,H_G(v))(\mathcal{B}_\Lambda(p)) \big),
+\]
+where $S_t = e^{-t\Delta}$ is the spectral smoothing operator.
+\end{definition}
+
+\begin{lemma}
+If $H_G$ is adjacency-preserving and $S_t$ is hybrid compatible, then
+\[
+\mathcal{S}_\Lambda(p,v)
+= S_t T_{\gamma_{p,H_G(v)}}(\mathcal{B}_\Lambda(p)).
+\]
+\end{lemma}
+
+\begin{remark}
+This operator fuses discrete duty progression with spectral transport and
+geometric smoothing.
+\end{remark}
+
+\subsection{Drift-Aware Duty Transitions}
+
+\begin{definition}
+Let $\mathcal{D}_\M$ and $\mathcal{D}_\Lambda$ be geometric and spectral
+drift components.  
+The \emph{drift-aware duty operator} is
+\[
+\mathcal{S}^\mathrm{drift}_\Lambda(p,v)
+= \mathcal{S}_\Lambda(p,v)
++ \alpha\, \mathcal{D}_\M(p,v)
++ \beta\, \mathcal{D}_\Lambda(p,v),
+\]
+where $\alpha,\beta$ are drift sensitivity parameters.
+\end{definition}
+
+\begin{lemma}
+If drift is stable, then
+\[
+\| \mathcal{S}^\mathrm{drift}_\Lambda(p,v)
+    - \mathcal{S}_\Lambda(p,v) \|
+\le C (\alpha + \beta).
+\]
+\end{lemma}
+
+\begin{remark}
+This operator adjusts duty transitions based on geometric and spectral
+distortion, forming the backbone of collapse-avoidance.
+\end{remark}
+
+\subsection{Spectral--Duty Stability}
+
+\begin{theorem}
+If $S_t$ is spectrally stable, $D(v,w)$ is geometrically stable, and
+$H_G$ is adjacency-preserving, then the spectral--duty operator satisfies
+\[
+\| \mathcal{S}_\Lambda(p,v) - \mathcal{S}_\Lambda(q,w) \|
+\le C \big( d_\M(p,q) + d_G(v,w) \big).
+\]
+\end{theorem}
+
+\begin{lemma}
+If drift is bounded, then the drift-aware spectral--duty operator is
+stable:
+\[
+\| \mathcal{S}^\mathrm{drift}_\Lambda(p,v)
+    - \mathcal{S}^\mathrm{drift}_\Lambda(q,w) \|
+\le C \big( d_\M(p,q) + d_G(v,w) \big).
+\]
+\end{lemma}
+
+\begin{remark}
+This stability is essential for runtime operators in the AI-operators
+module, especially collapse-avoidance and cognitive load stabilization.
+\end{remark}
+
+\section{Collapse--Avoidance Operator}
+
+\subsection{Collapse Surfaces}
+
+\begin{definition}
+Let $G = (V,E)$ be a finite graph.  
+A \emph{collapse surface} is a subset $C \subseteq V$ such that entering
+$C$ corresponds to a loss of structural or semantic stability in the
+discrete system.
+\end{definition}
+
+\begin{lemma}
+If $H_G$ is adjacency-preserving, then collapse surfaces propagate under
+hybrid transitions:
+\[
+H_G(C) \subseteq C \cup N(C),
+\]
+where $N(C)$ is the graph neighborhood of $C$.
+\end{lemma}
+
+\begin{remark}
+Collapse surfaces encode discrete instability regions.
+\end{remark}
+
+\subsection{Geometric Collapse Region}
+
+\begin{definition}
+Let $\iota : V \to \M$ be a manifold--graph embedding.  
+The \emph{geometric collapse region} is
+\[
+\mathcal{C}_\M = \iota(C) \subseteq \M.
+\]
+\end{definition}
+
+\begin{lemma}
+If $\iota$ has bounded distortion, then
+\[
+\mathrm{diam}(\mathcal{C}_\M)
+\le \mathrm{dist}(\iota) \cdot \mathrm{diam}(C).
+\]
+\end{lemma}
+
+\begin{remark}
+Collapse surfaces in the discrete system correspond to geometric regions
+where hybrid drift tends to accumulate.
+\end{remark}
+
+\subsection{Spectral Collapse Indicator}
+
+\begin{definition}
+Let $\mathcal{B}_\Lambda$ be a spectral bundle.  
+The \emph{spectral collapse indicator} at $(p,v)$ is
+\[
+\kappa_\Lambda(p,v)
+= \| \mathcal{B}_\Lambda(p) \|^{-1},
+\]
+with the convention that $\kappa_\Lambda = \infty$ if
+$\mathcal{B}_\Lambda(p) = 0$.
+\end{definition}
+
+\begin{lemma}
+If $p \in \mathcal{C}_\M$, then $\kappa_\Lambda(p,v)$ is large:
+\[
+\kappa_\Lambda(p,v) \ge C.
+\]
+\end{lemma}
+
+\begin{remark}
+Spectral collapse indicators detect frequency-localized degeneration.
+\end{remark}
+
+\subsection{Drift-Based Collapse Detection}
+
+\begin{definition}
+Let $\mathcal{D}_\M$ and $\mathcal{D}_\Lambda$ be geometric and spectral
+drift components.  
+The \emph{collapse drift score} at $(p,v)$ is
+\[
+\delta(p,v)
+= \alpha \|\mathcal{D}_\M(p,v)\|
++ \beta \|\mathcal{D}_\Lambda(p,v)\|
++ \gamma\, \kappa_\Lambda(p,v),
+\]
+where $\alpha,\beta,\gamma > 0$ are sensitivity parameters.
+\end{definition}
+
+\begin{lemma}
+If $(p,v)$ approaches the collapse region, then $\delta(p,v)$ diverges.
+\end{lemma}
+
+\begin{remark}
+Collapse drift score is the unified instability measure combining
+geometric, spectral, and discrete signals.
+\end{remark}
+
+\subsection{Collapse--Avoidance Steering}
+
+\begin{definition}
+Let $\delta(p,v)$ be the collapse drift score.  
+The \emph{collapse--avoidance steering vector} is
+\[
+A(p,v)
+= -\nabla \delta(p,v),
+\]
+where $\nabla$ is the Riemannian gradient on $\M$.
+\end{definition}
+
+\begin{lemma}
+If $\delta$ increases toward $\mathcal{C}_\M$, then $A(p,v)$ points away
+from the collapse region.
+\end{lemma}
+
+\begin{remark}
+This steering vector is the geometric backbone of collapse avoidance.
+\end{remark}
+
+\subsection{Collapse--Avoidance Operator}
+
+\begin{definition}
+Let $H$ be a hybrid transition operator.  
+The \emph{collapse--avoidance operator} is
+\[
+\mathcal{A}(p,v)
+= H(p,v) + \eta\, A(p,v),
+\]
+where $\eta > 0$ is a steering strength parameter.
+\end{definition}
+
+\begin{lemma}
+If $\eta$ is sufficiently small, then $\mathcal{A}$ preserves hybrid
+stability:
+\[
+\| \mathcal{A}(p,v) - H(p,v) \|
+\le C \eta.
+\]
+\end{lemma}
+
+\begin{theorem}
+If $\delta(p,v)$ diverges near $\mathcal{C}_\M$, then the collapse--avoidance
+operator satisfies
+\[
+\mathcal{A}(p,v) \notin \mathcal{C}_\M
+\]
+for all sufficiently small $\eta$.
+\end{theorem}
+
+\begin{remark}
+This operator is the runtime mechanism preventing hybrid transitions from
+entering collapse surfaces.
+\end{remark}
+
+\subsection{Stability Guarantees}
+
+\begin{theorem}
+If drift is stable and spectral smoothing is stable, then the
+collapse--avoidance operator satisfies
+\[
+\| \mathcal{A}(p,v) - \mathcal{A}(q,w) \|
+\le C \big( d_\M(p,q) + d_G(v,w) \big).
+\]
+\end{theorem}
+
+\begin{lemma}
+If $H$ is geometrically consistent, then $\mathcal{A}$ preserves
+manifold--graph embeddings:
+\[
+\mathcal{A}(\Delta_\iota(v)) = \Delta_\iota(H_G(v)).
+\]
+\end{lemma}
+
+\begin{remark}
+This stability is essential for runtime operators in the AI-operators
+module, especially context transport and cognitive load stabilization.
+\end{remark}
+
+\section{Hybrid Consistency and Holonomy}
+
+\subsection{Hybrid Holonomy}
+
+\begin{definition}
+Let $H : \mathcal{H} \to \mathcal{H}$ be a hybrid transition operator.
+A \emph{hybrid loop} based at $(p,v)$ is a finite sequence
+\[
+(p_0,v_0) \to (p_1,v_1) \to \cdots \to (p_k,v_k)
+\]
+such that $(p_0,v_0) = (p_k,v_k) = (p,v)$ and each transition is given by $H$.
+\end{definition}
+
+\begin{definition}
+The \emph{hybrid holonomy group} at $(p,v)$ is
+\[
+\Hol_H(p,v)
+= \{ H_{\gamma} : T_p\M \to T_p\M \mid \gamma \text{ is a hybrid loop} \},
+\]
+where $H_{\gamma}$ is the induced geometric–spectral transport along $\gamma$.
+\end{definition}
+
+\begin{lemma}
+If $H$ is geometrically consistent, then
+\[
+\Hol_H(p,v) \subseteq \Hol(p),
+\]
+where $\Hol(p)$ is the classical Riemannian holonomy group.
+\end{lemma}
+
+\begin{remark}
+Hybrid holonomy measures how hybrid transitions twist geometric–spectral
+information around loops in the hybrid state space.
+\end{remark}
+
+\subsection{Consistency Conditions}
+
+\begin{definition}
+A hybrid operator $H$ is \emph{spectrally consistent} if
+\[
+H_\Lambda(p,v) = T_{\gamma_{p,H_G(v)}}(\mathcal{B}_\Lambda(p)).
+\]
+\end{definition}
+
+\begin{lemma}
+If $H$ is spectrally consistent, then spectral drift vanishes:
+\[
+\mathcal{D}_\Lambda(p,v) = 0.
+\]
+\end{lemma}
+
+\begin{definition}
+A hybrid operator $H$ is \emph{holonomy consistent} if
+\[
+H_\M(p,v) = P_{\gamma_{p,H_G(v)}}(p)
+\]
+for all $(p,v)$.
+\end{definition}
+
+\begin{lemma}
+If $H$ is holonomy consistent, then geometric drift vanishes:
+\[
+\mathcal{D}_\M(p,v) = 0.
+\]
+\end{lemma}
+
+\begin{remark}
+Holonomy consistency ensures that hybrid transitions preserve geometric
+parallel transport.
+\end{remark}
+
+\subsection{Holonomy Drift Integration}
+
+\begin{definition}
+Let $\mathcal{D}_\M$ be the geometric drift tensor.  
+The \emph{holonomy drift operator} is
+\[
+\mathcal{H}_D(p,v)
+= \exp\!\big( \mathcal{D}_\M(p,v) \big),
+\]
+where the exponential is taken in the endomorphism algebra of $T_p\M$.
+\end{definition}
+
+\begin{lemma}
+If $\mathcal{D}_\M$ is small, then
+\[
+\mathcal{H}_D(p,v)
+= \mathrm{Id} + \mathcal{D}_\M(p,v) + O(\|\mathcal{D}_\M\|^2).
+\]
+\end{lemma}
+
+\begin{theorem}
+Hybrid holonomy decomposes as
+\[
+\Hol_H(p,v)
+= \Hol(p) \cdot \exp\!\big( \mathcal{D}_\M(p,v) \big).
+\]
+\end{theorem}
+
+\begin{remark}
+This decomposition shows that hybrid holonomy is classical holonomy
+perturbed by geometric drift.
+\end{remark}
+
+\subsection{Spectral--Geometric Holonomy}
+
+\begin{definition}
+Let $T_{\gamma}$ be spectral bundle transport and $P_{\gamma}$ be geometric
+parallel transport.  
+The \emph{spectral--geometric holonomy operator} is
+\[
+\mathcal{H}_{\Lambda}(p,v)
+= T_{\gamma_{p,v}} \circ P_{\gamma_{p,v}}.
+\]
+\end{definition}
+
+\begin{lemma}
+If curvature is bounded, then
+\[
+\| \mathcal{H}_{\Lambda}(p,v) - P_{\gamma_{p,v}} \|
+\le C \cdot \mathrm{length}(\gamma_{p,v}).
+\]
+\end{lemma}
+
+\begin{theorem}
+Hybrid holonomy satisfies
+\[
+\Hol_H(p,v)
+= \Hol(p) \cdot \Hol_{\Lambda}(p,v),
+\]
+where $\Hol_{\Lambda}(p,v)$ is the spectral holonomy group generated by
+spectral bundle transport.
+\end{theorem}
+
+\begin{remark}
+Hybrid holonomy blends geometric and spectral twisting along hybrid loops.
+\end{remark}
+
+\subsection{Hybrid Holonomy Invariants}
+
+\begin{definition}
+A quantity $\mathcal{I}(p,v)$ is a \emph{hybrid holonomy invariant} if
+\[
+\mathcal{I}(p,v) = \mathcal{I}(H_{\gamma}(p,v))
+\]
+for all hybrid loops $\gamma$.
+\end{definition}
+
+\begin{lemma}
+If $H$ is holonomy consistent, then hybrid holonomy invariants coincide
+with classical holonomy invariants.
+\end{lemma}
+
+\begin{theorem}
+If spectral drift vanishes, then hybrid holonomy invariants are constant
+on spectral bundles:
+\[
+\mathcal{I}(p,v) = \mathcal{I}(q,v)
+\quad\text{whenever}\quad
+\mathcal{B}_\Lambda(p) = \mathcal{B}_\Lambda(q).
+\]
+\end{theorem}
+
+\begin{remark}
+Hybrid holonomy invariants are the structural quantities preserved under
+full hybrid transitions, forming the backbone of runtime stability.
+\end{remark}
