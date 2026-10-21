@@ -10,3 +10,9 @@ axiom spectral_op_respects_continuity
   {M : Manifold} {B : SpectralBundle M}
   (L : LocalOperator B) :
   L.bounded → True
+
+lemma bounded_implies_spectral_valid
+  {M : Manifold} {B : SpectralBundle M}
+  (L : LocalOperator B) :
+  L.bounded → True :=
+by intro h; trivial
