@@ -2,6 +2,8 @@ import Geometry.Transport
 import Spectral.LocalOperator
 import Hybrid.HybridTransport
 import Runtime.RuntimeOperator
+import Global.Invariant
+import Global.InvariantAssembly
 
 /-
   Proof Strategy (Invariant Preservation):
@@ -46,5 +48,25 @@ theorem invariant_preservation
   (R : RuntimeOperator M B)
   : PreservesInvariant R :=
 by
-  -- structured proof skeleton
-  admit
+  intro h inv
+
+  -- Step 1: geometric + spectral preservation
+  have gs := geom_then_spectral_preserve
+    (Transport M)
+    (LocalOperator B)
+    h inv
+
+  -- Step 2: spectral + hybrid preservation
+  have sh := spectral_then_hybrid_preserve
+    (LocalOperator B)
+    (HybridTransport M B)
+    h gs
+
+  -- Step 3: hybrid + runtime preservation
+  have hr := hybrid_then_runtime_preserve
+    (HybridTransport M B)
+    R
+    h sh
+
+  -- Final result: invariant preserved under R.apply
+  exact hr
