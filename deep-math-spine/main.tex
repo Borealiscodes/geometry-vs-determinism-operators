@@ -1,0 +1,69 @@
+\documentclass[11pt]{article}
+
+% ------------------------------------------------------------
+% Packages
+% ------------------------------------------------------------
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+% Page geometry
+\geometry{margin=1in}
+
+% ------------------------------------------------------------
+% Global Notation
+% ------------------------------------------------------------
+\input{appendix/notation.tex}
+
+% ------------------------------------------------------------
+% Theorem Environments
+% ------------------------------------------------------------
+\newtheorem{definition}{Definition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{corollary}{Corollary}[section]
+
+% ------------------------------------------------------------
+% Document Start
+% ------------------------------------------------------------
+\begin{document}
+
+\title{Deep Mathematical Spine for Structural AI Operators}
+\author{Borealis S. Hedling}
+\date{2026}
+\maketitle
+
+\tableofcontents
+\newpage
+
+% ------------------------------------------------------------
+% Core Mathematical Domains
+% ------------------------------------------------------------
+
+% Differential Geometry
+\input{geometry/geometry.tex}
+
+% Spectral Geometry
+\input{spectral/spectral.tex}
+
+% Discrete Deterministic Systems
+\input{discrete/discrete.tex}
+
+% Category-Theoretic Mode Switching
+\input{category/category.tex}
+
+% Hybrid Geometric–Discrete Operators
+\input{hybrid/hybrid.tex}
+
+% AI-Supported Reasoning Operators
+\input{ai-operators/ai-operators.tex}
+
+% ------------------------------------------------------------
+% Appendix: Proofs and Extended Material
+% ------------------------------------------------------------
+\appendix
+\input{appendix/proofs.tex}
+
+\end{document}
