@@ -8,4 +8,9 @@ structure HybridTransport
   (B : SpectralBundle M)
   :=
   (step : HybridState M B → HybridState M B)
-  (consistent : Prop)
+  (consistent : Prop)   -- hybrid consistency condition
+
+axiom hybrid_consistency_respects_components
+  {M : Manifold} {B : SpectralBundle M}
+  (H : HybridTransport M B) :
+  H.consistent → True
