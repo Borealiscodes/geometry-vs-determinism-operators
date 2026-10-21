@@ -261,3 +261,31 @@ Author: Borealis S. Hedling
 
 ---
 
+
+---
+
+🧾 Provenance Footer
+
+`
+Artifact: README-geometry-vs-determinism-v1.0
+Lane: Documentation • Archive • Structural AI History
+
+Purpose:
+  Preserve the original README as a historical snapshot of the early
+  geometry-vs-determinism-operators project before the introduction of
+  drift-based stability predicates, hybrid alignment, runtime safety,
+  and global invariant preservation.
+
+Anchors:
+  - Original operator taxonomy (geometry, spectral, discrete, category, hybrid, AI)
+  - Early pedagogical framing (Users, Engineers, Geometers)
+  - Full formal mathematics section (manifolds, Laplacians, DFAs, functors)
+  - Preprint-aligned conceptual structure
+
+Maintainer: Borealis S. Hedling
+Location: Dublin, Ireland
+Timestamp: 21 October 2026 — 07:05 IST
+Status: Archived • Historical • Superseded by Structural-AI v2.0 README
+`
+
+---
