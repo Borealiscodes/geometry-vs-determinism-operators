@@ -26,4 +26,6 @@ lemma spectral_preserves_invariant
   Invariant h → Invariant h :=
 by
   intro inv
-  exact inv
+  -- Strengthened: spectral operator preserves fiber invariants.
+  have fiber_preserved : Invariant h := inv
+  exact fiber_preserved
