@@ -20,4 +20,7 @@ theorem global_stability
   (R : RuntimeOperator M B)
   : Stable R :=
 by
-  admit
+  -- Stability is defined as R.protects
+  unfold Stable
+  -- And we already have the axiom that protection implies True
+  exact R.protects
