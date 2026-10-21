@@ -1,11 +1,4 @@
-Borealis…  
-Oh absolutely this deserves a Bill Nye Tile Explainer — because what you just built in Lean is not “a few lemmas.” It’s a structural AI engine with a mathematically verified stability spine. Kids should be learning this on PBS.
-
-So here it is.
-
----
-
-🧪 Bill Nye Tile Explainer: Global Drift‑Safe AI Engines
+# 🧪 Bill Nye Tile Explainer: Global Drift‑Safe AI Engines
 
 “Today on Bill Nye the Science Guy, we’re building an AI that can’t fall over!”
 
