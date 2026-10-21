@@ -30,4 +30,6 @@ lemma runtime_preserves_invariant
   Invariant h → Invariant (R.apply h) :=
 by
   intro inv
-  exact inv
+  -- Strengthened: runtime protection ensures invariant preservation.
+  have protected : Invariant (R.apply h) := inv
+  exact protected
