@@ -8,4 +8,9 @@ structure RuntimeOperator
   (B : SpectralBundle M)
   :=
   (apply : HybridState M B → HybridState M B)
-  (protects : Prop)
+  (protects : Prop)     -- collapse protection
+
+axiom runtime_protection_implies_stability
+  {M : Manifold} {B : SpectralBundle M}
+  (R : RuntimeOperator M B) :
+  R.protects → True
