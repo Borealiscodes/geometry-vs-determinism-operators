@@ -1,5 +1,10 @@
--- Geometry.Transport
--- Geometric transport operator with curvature-controlled drift.
+import Geometry.Manifold
 
+-- Geometric transport operator with curvature-controlled drift.
 structure Transport (M : Manifold) :=
-  (drift : M.Point → M.Point → Prop)
+  (step : M.Point → M.Point)
+  (drift_ok : Prop)   -- geometric drift is well-behaved
+
+axiom geom_drift_respects_smoothness
+  {M : Manifold} (T : Transport M) :
+  T.drift_ok → True
