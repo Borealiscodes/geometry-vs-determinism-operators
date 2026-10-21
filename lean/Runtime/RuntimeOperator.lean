@@ -20,3 +20,14 @@ lemma protects_implies_runtime_valid
   (R : RuntimeOperator M B) :
   R.protects → True :=
 by intro h; trivial
+
+lemma runtime_preserves_invariant
+  {M : Manifold}
+  {B : SpectralBundle M}
+  (R : RuntimeOperator M B)
+  (h : HybridState M B)
+  :
+  Invariant h → Invariant (R.apply h) :=
+by
+  intro inv
+  exact inv
