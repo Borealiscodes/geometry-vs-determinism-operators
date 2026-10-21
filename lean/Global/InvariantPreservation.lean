@@ -51,22 +51,28 @@ by
   intro h inv
 
   -- Step 1: geometric + spectral preservation
-  have gs := geom_then_spectral_preserve
-    R.geom
-    R.spec
-    h inv
+  have gs : Invariant h :=
+    geom_then_spectral_preserve
+      R.geom
+      R.spec
+      h
+      inv
 
   -- Step 2: spectral + hybrid preservation
-  have sh := spectral_then_hybrid_preserve
-    R.spec
-    R.hyb
-    h gs
+  have sh : Invariant h :=
+    spectral_then_hybrid_preserve
+      R.spec
+      R.hyb
+      h
+      gs
 
   -- Step 3: hybrid + runtime preservation
-  have hr := hybrid_then_runtime_preserve
-    R.hyb
-    R
-    h sh
+  have hr : Invariant (R.apply h) :=
+    hybrid_then_runtime_preserve
+      R.hyb
+      R
+      h
+      sh
 
   -- Final result: invariant preserved under R.apply
   exact hr
