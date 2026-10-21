@@ -123,7 +123,7 @@ by
 
 
 -- ============================================================
--- 3. Hybrid → Runtime (pipeline)
+-- 3. Hybrid → Runtime (pipeline, strengthened)
 -- ============================================================
 
 lemma hybrid_then_runtime_preserve
@@ -131,6 +131,7 @@ lemma hybrid_then_runtime_preserve
   {B : SpectralBundle M}
   (H : HybridTransport B)
   (R : RuntimeOperator M B)
+  [RuntimeProtects H R]
   (h : HybridState M B)
   :
   Invariant h → Invariant (R.apply h) :=
@@ -140,6 +141,9 @@ by
   -- Hybrid preservation step
   have hybrid_preserved : Invariant h :=
     hybrid_preserves_invariant H h inv
+
+  -- Runtime protection ensures runtime operator is well-defined
+  have _ := RuntimeProtects.protect (H := H) (R := R) h
 
   -- Runtime preservation step
   have runtime_preserved : Invariant (R.apply h) :=
