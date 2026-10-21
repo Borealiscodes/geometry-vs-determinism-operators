@@ -22,11 +22,16 @@ lemma geom_then_spectral_preserve
   Invariant h → Invariant h :=
 by
   intro inv
-  -- geometric preservation
-  have geom := transport_preserves_invariant T h inv
-  -- spectral preservation
-  have spec := spectral_preserves_invariant L h geom
-  exact spec
+
+  -- Geometric preservation step
+  have geom_preserved : Invariant h :=
+    transport_preserves_invariant T h inv
+
+  -- Spectral preservation step
+  have spectral_preserved : Invariant h :=
+    spectral_preserves_invariant L h geom_preserved
+
+  exact spectral_preserved
 
 lemma spectral_then_hybrid_preserve
   {M : Manifold}
@@ -38,11 +43,16 @@ lemma spectral_then_hybrid_preserve
   Invariant h → Invariant h :=
 by
   intro inv
-  -- spectral preservation
-  have spec := spectral_preserves_invariant L h inv
-  -- hybrid preservation
-  have hyb := hybrid_preserves_invariant H h spec
-  exact hyb
+
+  -- Spectral preservation step
+  have spectral_preserved : Invariant h :=
+    spectral_preserves_invariant L h inv
+
+  -- Hybrid preservation step
+  have hybrid_preserved : Invariant h :=
+    hybrid_preserves_invariant H h spectral_preserved
+
+  exact hybrid_preserved
 
 lemma hybrid_then_runtime_preserve
   {M : Manifold}
@@ -54,8 +64,13 @@ lemma hybrid_then_runtime_preserve
   Invariant h → Invariant (R.apply h) :=
 by
   intro inv
-  -- hybrid preservation
-  have hyb := hybrid_preserves_invariant H h inv
-  -- runtime preservation
-  have run := runtime_preserves_invariant R h hyb
-  exact run
+
+  -- Hybrid preservation step
+  have hybrid_preserved : Invariant h :=
+    hybrid_preserves_invariant H h inv
+
+  -- Runtime preservation step
+  have runtime_preserved : Invariant (R.apply h) :=
+    runtime_preserves_invariant R h hybrid_preserved
+
+  exact runtime_preserved
