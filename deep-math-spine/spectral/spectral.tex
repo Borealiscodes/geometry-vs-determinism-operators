@@ -1,0 +1,66 @@
+% ------------------------------------------------------------
+% Spectral Geometry Module
+% Deep Mathematical Spine for Structural AI Operators
+% ------------------------------------------------------------
+
+\section{Spectral Geometry Foundations}
+
+\subsection{Laplace--Beltrami Operator}
+\begin{definition}
+Let $(\M, g)$ be a smooth Riemannian manifold.  
+The \emph{Laplace--Beltrami operator} acting on smooth functions
+$f \in C^\infty(\M)$ is defined by
+\[
+\Delta f = \mathrm{div}(\nabla f).
+\]
+\end{definition}
+
+% Placeholder for coordinate expression, divergence, gradient, metric form
+
+\subsection{Eigenfunctions and Eigenvalues}
+\begin{definition}
+A function $\phi \in C^\infty(\M)$ is a \emph{Laplace--Beltrami eigenfunction}
+with eigenvalue $\lambda \in \mathbb{R}$ if
+\[
+\Delta \phi = \lambda \phi.
+\]
+\end{definition}
+
+% Placeholder for spectral decomposition, orthonormal basis, Weyl law
+
+\subsection{Spectral Gap}
+\begin{definition}
+The \emph{spectral gap} of $\M$ is the difference between the first two
+distinct eigenvalues of the Laplace--Beltrami operator:
+\[
+\gamma = \lambda_1 - \lambda_0.
+\]
+\end{definition}
+
+% Placeholder for geometric meaning, stability, curvature relations
+
+\subsection{Heat Kernel}
+\begin{definition}
+The \emph{heat kernel} $K_t(x,y)$ is the fundamental solution to the heat
+equation
+\[
+\frac{\partial u}{\partial t} = \Delta u,
+\]
+satisfying $u(x,0) = f(x)$ and
+\[
+u(x,t) = \int_{\M} K_t(x,y) f(y) \, dy.
+\]
+\end{definition}
+
+% Placeholder for short-time asymptotics, geometric dependence
+
+\subsection{Spectral Bundles}
+% Placeholder for your definition of spectral bundles,
+% fiber structure, and operator-level meaning
+
+\subsection{Spectral-Duty Operators (Structural AI)}
+% Placeholder for formal definition of spectral-duty operators,
+% commutation relations, and runtime behavior
+
+\subsection{Notes}
+\input{spectral-notes.tex}
