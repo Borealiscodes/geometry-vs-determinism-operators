@@ -3,69 +3,880 @@
 % Deep Mathematical Spine for Structural AI Operators
 % ------------------------------------------------------------
 
-\section{AI-Supported Reasoning Operators}
+\section{Context Transport Operator}
 
-\subsection{Context Transport Operator}
+\subsection{Context State Space}
+
 \begin{definition}
-A \emph{context transport operator} $\mathcal{T}$ acts on a reasoning
-state $(p,q)$ consisting of geometric position $p \in \M$ and discrete
-state $q \in V(G)$, producing
+A \emph{context state} is a triple
 \[
-\mathcal{T}(p,q) = (\Psi(p,q),\, q)
+\mathfrak{c} = (p, v, \xi)
 \]
-where $\Psi$ is a geometric update rule influenced by hybrid or spectral
-structure.
+where
+\begin{enumerate}
+    \item $p \in \M$ is a geometric state,
+    \item $v \in V$ is a discrete state,
+    \item $\xi \in \mathcal{B}_\Lambda(p)$ is a spectral context vector.
+\end{enumerate}
+The context state space is
+\[
+\mathcal{C} = \{ (p,v,\xi) \mid p \in \M,\ v \in V,\ \xi \in \mathcal{B}_\Lambda(p) \}.
+\]
 \end{definition}
 
-% Placeholder for transport stability, drift bounds, operator chains
+\begin{lemma}
+If $\iota : V \to \M$ is geodesically consistent, then
+\[
+\Delta_\iota(v) = (\iota(v), v, \mathcal{B}_\Lambda(\iota(v)))
+\]
+is a canonical context embedding.
+\end{lemma}
+
+\subsection{Geometric Transport}
+
+\begin{definition}
+Let $\gamma_{p,v}$ be the geometric curve associated with discrete state $v$.
+The \emph{geometric context transport} is
+\[
+T_\M(p,v,\xi)
+= \big( P_{\gamma_{p,v}}(p),\, v,\, \xi \big),
+\]
+where $P_{\gamma_{p,v}}$ is parallel transport.
+\end{definition}
+
+\begin{lemma}
+If curvature is bounded, then
+\[
+\| P_{\gamma_{p,v}} - \mathrm{Id} \|
+\le C \cdot \mathrm{length}(\gamma_{p,v}).
+\]
+\end{lemma}
+
+\begin{remark}
+Geometric transport preserves geometric structure while moving context
+through the manifold.
+\end{remark}
+
+\subsection{Spectral Transport}
+
+\begin{definition}
+Let $T_{\gamma_{p,v}}$ be spectral bundle transport.  
+The \emph{spectral context transport} is
+\[
+T_\Lambda(p,v,\xi)
+= \big( p,\, v,\, T_{\gamma_{p,v}}(\xi) \big).
+\]
+\end{definition}
+
+\begin{lemma}
+If curvature is bounded, then
+\[
+\| T_{\gamma_{p,v}}(\xi) - \xi \|
+\le C \cdot \mathrm{length}(\gamma_{p,v}) \|\xi\|.
+\]
+\end{lemma}
+
+\begin{remark}
+Spectral transport preserves frequency-localized structure.
+\end{remark}
+
+\subsection{Discrete Transport}
+
+\begin{definition}
+Let $H_G : V \to V$ be the discrete transition operator.  
+The \emph{discrete context transport} is
+\[
+T_G(p,v,\xi)
+= \big( p,\, H_G(v),\, \xi \big).
+\]
+\end{definition}
+
+\begin{lemma}
+If $H_G$ preserves adjacency, then discrete transport respects duty chains.
+\end{lemma}
+
+\subsection{Hybrid Context Transport}
+
+\begin{definition}
+The \emph{hybrid context transport operator} is
+\[
+T_H = T_\M \circ T_\Lambda \circ T_G.
+\]
+Explicitly,
+\[
+T_H(p,v,\xi)
+= \big( P_{\gamma_{p,v}}(p),\ H_G(v),\ T_{\gamma_{p,v}}(\xi) \big).
+\]
+\end{definition}
+
+\begin{lemma}
+If geometric and spectral transport are stable, then $T_H$ is stable:
+\[
+\| T_H(p,v,\xi) - T_H(q,w,\eta) \|
+\le C \big( d_\M(p,q) + d_G(v,w) + \|\xi - \eta\| \big).
+\]
+\end{lemma}
+
+\subsection{Drift-Aware Context Transport}
+
+\begin{definition}
+Let $\mathcal{D}_\M$ and $\mathcal{D}_\Lambda$ be geometric and spectral drift.
+The \emph{drift-aware context transport operator} is
+\[
+T_H^\mathrm{drift}(p,v,\xi)
+= T_H(p,v,\xi)
++ \alpha\, \mathcal{D}_\M(p,v)
++ \beta\, \mathcal{D}_\Lambda(p,v),
+\]
+where $\alpha,\beta > 0$ are drift sensitivity parameters.
+\end{definition}
+
+\begin{lemma}
+If drift is stable, then
+\[
+\| T_H^\mathrm{drift} - T_H \|
+\le C (\alpha + \beta).
+\]
+\end{lemma}
+
+\begin{remark}
+Drift-aware transport compensates for hybrid distortion accumulated during
+geometric or spectral transitions.
+\end{remark}
+
+\subsection{Collapse-Avoidance Integration}
+
+\begin{definition}
+Let $\mathcal{A}$ be the collapse--avoidance operator.  
+The \emph{collapse-safe context transport} is
+\[
+T_H^\mathrm{safe}(p,v,\xi)
+= \mathcal{A}\big( T_H^\mathrm{drift}(p,v,\xi) \big).
+\]
+\end{definition}
+
+\begin{lemma}
+If $\mathcal{A}$ steers away from collapse surfaces, then
+\[
+T_H^\mathrm{safe}(p,v,\xi) \notin \mathcal{C}_\M \times C.
+\]
+\end{lemma}
+
+\begin{remark}
+This is the runtime mechanism preventing context propagation into unstable
+regions.
+\end{remark}
+
+\subsection{Stability Guarantees}
+
+\begin{theorem}
+If geometric transport, spectral transport, discrete transport, drift
+compensation, and collapse avoidance are stable, then the full context
+transport operator satisfies
+\[
+\| T_H^\mathrm{safe}(p,v,\xi) - T_H^\mathrm{safe}(q,w,\eta) \|
+\le C \big( d_\M(p,q) + d_G(v,w) + \|\xi - \eta\| \big).
+\]
+\end{theorem}
+
+\begin{lemma}
+If $H$ is holonomy consistent, then context transport preserves
+hybrid holonomy invariants.
+\end{lemma}
+
+\begin{remark}
+This operator is the backbone of runtime context propagation in
+structural AI systems.
+\end{remark} 
+
+
+\section{Cognitive Load Stabilizer}
+
+\subsection{Load Metric}
+
+\begin{definition}
+A \emph{cognitive load state} is a context state
+\[
+\mathfrak{c} = (p, v, \xi)
+\]
+equipped with a scalar load value $L(\mathfrak{c}) \in \mathbb{R}_{\ge 0}$.
+\end{definition}
+
+\begin{definition}
+The \emph{cognitive load metric} is
+\[
+L(p,v,\xi)
+= \alpha \|\xi\|
++ \beta\, d_G(v, v_0)
++ \gamma\, d_\M(p, p_0),
+\]
+where $(p_0,v_0)$ is a reference state and $\alpha,\beta,\gamma > 0$ are
+weight parameters.
+\end{definition}
+
+\begin{lemma}
+If $\mathcal{B}_\Lambda$ varies smoothly, then $L$ is Lipschitz continuous:
+\[
+|L(p,v,\xi) - L(q,w,\eta)|
+\le C \big( d_\M(p,q) + d_G(v,w) + \|\xi - \eta\| \big).
+\]
+\end{lemma}
+
+\begin{remark}
+Cognitive load measures geometric displacement, discrete duty distance,
+and spectral magnitude.
+\end{remark}
+
+\subsection{Spectral Smoothing Integration}
+
+\begin{definition}
+Let $S_t = e^{-t\Delta}$ be the spectral smoothing operator.  
+The \emph{spectral load reducer} is
+\[
+R_\Lambda(p,v,\xi)
+= (p, v, S_t(\xi)).
+\]
+\end{definition}
+
+\begin{lemma}
+If $t > 0$, then
+\[
+\| S_t(\xi) \| \le e^{-\lambda_1 t} \|\xi\|.
+\]
+\end{lemma}
+
+\begin{theorem}
+Spectral smoothing reduces load:
+\[
+L(R_\Lambda(p,v,\xi)) \le L(p,v,\xi).
+\]
+\end{theorem}
+
+\begin{remark}
+Spectral smoothing is the primary mechanism for reducing high-frequency
+cognitive load.
+\end{remark}
+
+\subsection{Geometric Load Control}
+
+\begin{definition}
+Let $A(p,v)$ be the collapse-avoidance steering vector.  
+The \emph{geometric load controller} is
+\[
+G(p,v,\xi)
+= \big( p + \eta A(p,v),\ v,\ \xi \big),
+\]
+where $\eta > 0$ is a geometric stabilization parameter.
+\end{definition}
+
+\begin{lemma}
+If $A$ points away from collapse regions, then
+\[
+d_\M(G(p,v,\xi), p_0)
+\le d_\M(p,p_0) + C\eta.
+\]
+\end{lemma}
+
+\begin{remark}
+Geometric load control prevents drift toward collapse surfaces.
+\end{remark}
+
+\subsection{Discrete Load Control}
+
+\begin{definition}
+Let $H_G : V \to V$ be the discrete transition operator.  
+The \emph{discrete load controller} is
+\[
+D(p,v,\xi)
+= (p, H_G(v), \xi).
+\]
+\end{definition}
+
+\begin{lemma}
+If $H_G$ preserves adjacency, then
+\[
+d_G(H_G(v), v_0) \le d_G(v, v_0) + 1.
+\]
+\end{lemma}
+
+\begin{remark}
+Discrete load control prevents runaway duty-chain escalation.
+\end{remark}
+
+\subsection{Drift-Aware Load Compensation}
+
+\begin{definition}
+Let $\mathcal{D}_\M$ and $\mathcal{D}_\Lambda$ be geometric and spectral drift.
+The \emph{drift compensation operator} is
+\[
+C(p,v,\xi)
+= (p, v, \xi)
+- \alpha' \mathcal{D}_\M(p,v)
+- \beta' \mathcal{D}_\Lambda(p,v),
+\]
+where $\alpha',\beta' > 0$ are compensation parameters.
+\end{definition}
+
+\begin{lemma}
+If drift is stable, then
+\[
+\| C(p,v,\xi) - (p,v,\xi) \|
+\le C(\alpha' + \beta').
+\]
+\end{lemma}
+
+\begin{remark}
+Drift compensation counteracts hybrid distortion before it accumulates.
+\end{remark}
 
 \subsection{Cognitive Load Stabilizer}
-\begin{definition}
-A \emph{cognitive load stabilizer} is an operator $\mathcal{S}$ acting on
-a reasoning trajectory $\gamma(t)$, producing a modified trajectory
-$\tilde{\gamma}(t)$ that minimizes curvature-induced or collapse-induced
-instabilities.
-\end{definition}
 
-% Placeholder for stabilizer invariants, curvature dependence
-
-\subsection{Geometric Scaffolding Operator}
 \begin{definition}
-A \emph{geometric scaffolding operator} $\mathcal{G}$ lifts discrete or
-spectral reasoning steps into geometric space by mapping
+The \emph{cognitive load stabilizer} is the composite operator
 \[
-\mathcal{G}(q) = p \in \M
+\mathcal{L}
+= C \circ D \circ G \circ R_\Lambda.
 \]
-according to a manifold–graph embedding or hybrid transition rule.
-\end{definition}
-
-% Placeholder for scaffolding consistency, embedding distortion
-
-\subsection{Spectral Smoothing Operator}
-\begin{definition}
-A \emph{spectral smoothing operator} is given by the heat semigroup
-$e^{-t\Delta}$ acting on geometric states or representations, reducing
-high-frequency instability in reasoning trajectories.
-\end{definition}
-
-% Placeholder for smoothing bounds, hybrid commutation relations
-
-\subsection{Collapse-Avoidance Operator}
-\begin{definition}
-A \emph{collapse-avoidance operator} $\mathcal{C}$ acts on discrete
-states $q \in V(G)$ by steering transitions away from collapse surfaces
-$C \subseteq Q$, producing
+Explicitly,
 \[
-\mathcal{C}(q) = \delta(q,a^\*)
+\mathcal{L}(p,v,\xi)
+= C\big( D\big( G\big( R_\Lambda(p,v,\xi) \big) \big) \big).
 \]
-for an input symbol $a^\*$ chosen to avoid collapse.
 \end{definition}
 
-% Placeholder for collapse topology, avoidance guarantees
+\begin{lemma}
+Each component reduces or controls load, hence $\mathcal{L}$ is load
+non-increasing:
+\[
+L(\mathcal{L}(p,v,\xi)) \le L(p,v,\xi).
+\]
+\end{lemma}
 
-\subsection{Operator Chains}
-% Placeholder for your formal definition of operator chains,
-% multi-domain composition, and runtime invariants
+\begin{theorem}
+If spectral smoothing, geometric steering, discrete control, and drift
+compensation are stable, then the cognitive load stabilizer satisfies
+\[
+\| \mathcal{L}(p,v,\xi) - \mathcal{L}(q,w,\eta) \|
+\le C \big( d_\M(p,q) + d_G(v,w) + \|\xi - \eta\| \big).
+\]
+\end{theorem}
 
-\subsection{Notes}
-\input{ai-operators-notes.tex}
+\begin{remark}
+This operator is the runtime mechanism preventing overload in structural
+AI systems.
+\end{remark}
+
+
+\section{Collapse--Safe Context Integrator}
+
+\subsection{Multi-Step Context Integration}
+
+\begin{definition}
+A \emph{context trajectory} is a sequence
+\[
+\mathfrak{c}_0 \to \mathfrak{c}_1 \to \cdots \to \mathfrak{c}_k
+\]
+where each transition is given by the collapse-safe context transport
+operator $T_H^\mathrm{safe}$.
+\end{definition}
+
+\begin{definition}
+The \emph{integrated context} of a trajectory is
+\[
+\Xi_k = \sum_{i=0}^k w_i\, \xi_i,
+\]
+where $\xi_i$ is the spectral context at step $i$ and $w_i$ are integration
+weights satisfying $w_i \ge 0$ and $\sum_i w_i = 1$.
+\end{definition}
+
+\begin{lemma}
+If spectral bundles vary smoothly, then
+\[
+\Xi_k \in \mathcal{B}_\Lambda(p_k).
+\]
+\end{lemma}
+
+\begin{remark}
+Integrated context accumulates spectral information along a trajectory.
+\end{remark}
+
+\subsection{Geometric--Spectral Consistency}
+
+\begin{definition}
+Let $P_{\gamma_i}$ be geometric parallel transport and $T_{\gamma_i}$ be
+spectral bundle transport along the $i$-th transition.  
+The \emph{consistency-corrected context} is
+\[
+\tilde{\xi}_i
+= T_{\gamma_i} P_{\gamma_i}(\xi_{i-1}).
+\]
+\end{definition}
+
+\begin{lemma}
+If curvature is bounded, then
+\[
+\| \tilde{\xi}_i - \xi_i \|
+\le C \cdot \mathrm{length}(\gamma_i).
+\]
+\end{lemma}
+
+\begin{remark}
+This correction ensures geometric and spectral transport remain aligned.
+\end{remark}
+
+\subsection{Drift-Aware Integration}
+
+\begin{definition}
+Let $\mathcal{D}_\M$ and $\mathcal{D}_\Lambda$ be geometric and spectral drift.
+The \emph{drift-aware integrator} is
+\[
+\Xi_k^\mathrm{drift}
+= \Xi_k
+- \alpha \sum_{i=0}^k \mathcal{D}_\M(p_i,v_i)
+- \beta \sum_{i=0}^k \mathcal{D}_\Lambda(p_i,v_i),
+\]
+where $\alpha,\beta > 0$ are drift compensation parameters.
+\end{definition}
+
+\begin{lemma}
+If drift is stable, then
+\[
+\| \Xi_k^\mathrm{drift} - \Xi_k \|
+\le C k (\alpha + \beta).
+\]
+\end{lemma}
+
+\begin{remark}
+Drift-aware integration prevents accumulated distortion over long
+trajectories.
+\end{remark}
+
+\subsection{Collapse-Safe Accumulation}
+
+\begin{definition}
+Let $\delta(p_i,v_i)$ be the collapse drift score.  
+The \emph{collapse-safe integration weights} are
+\[
+w_i^\mathrm{safe}
+= \frac{e^{-\gamma \delta(p_i,v_i)}}{\sum_{j=0}^k e^{-\gamma \delta(p_j,v_j)}},
+\]
+where $\gamma > 0$ is a collapse sensitivity parameter.
+\end{definition}
+
+\begin{lemma}
+If $\delta$ diverges near collapse surfaces, then
+\[
+w_i^\mathrm{safe} \to 0
+\quad\text{whenever}\quad (p_i,v_i) \in \mathcal{C}_\M \times C.
+\]
+\end{lemma}
+
+\begin{remark}
+Collapse-safe weights suppress contributions from unstable states.
+\end{remark}
+
+\subsection{Collapse--Safe Context Integrator}
+
+\begin{definition}
+The \emph{collapse-safe context integrator} is
+\[
+\mathcal{I}_k(p_0,v_0,\xi_0)
+= \sum_{i=0}^k w_i^\mathrm{safe}\,
+\Big( T_H^\mathrm{safe} \Big)^i (p_0,v_0,\xi_0)
+\]
+with drift-aware correction:
+\[
+\mathcal{I}_k^\mathrm{drift}
+= \mathcal{I}_k
+- \alpha \sum_{i=0}^k \mathcal{D}_\M(p_i,v_i)
+- \beta \sum_{i=0}^k \mathcal{D}_\Lambda(p_i,v_i).
+\]
+\end{definition}
+
+\begin{lemma}
+If collapse avoidance is effective, then
+\[
+\mathcal{I}_k^\mathrm{drift}(p_0,v_0,\xi_0)
+\notin \mathcal{C}_\M \times C.
+\]
+\end{lemma}
+
+\begin{remark}
+This operator accumulates context over multiple steps while remaining
+geometrically, spectrally, and discretely stable.
+\end{remark}
+
+\subsection{Stability Guarantees}
+
+\begin{theorem}
+If context transport, drift compensation, and collapse avoidance are
+stable, then the collapse-safe context integrator satisfies
+\[
+\| \mathcal{I}_k^\mathrm{drift}(p_0,v_0,\xi_0)
+ - \mathcal{I}_k^\mathrm{drift}(q_0,w_0,\eta_0) \|
+\le C \big( d_\M(p_0,q_0) + d_G(v_0,w_0) + \|\xi_0 - \eta_0\| \big).
+\]
+\end{theorem}
+
+\begin{lemma}
+If $H$ is holonomy consistent, then integrated context preserves hybrid
+holonomy invariants.
+\end{lemma}
+
+\begin{remark}
+This operator is the backbone of multi-step reasoning and stable context
+accumulation in structural AI systems.
+\end{remark}
+
+\section{Runtime Stability Operator}
+
+\subsection{Global Stability Metric}
+
+\begin{definition}
+A \emph{runtime state} is a context state
+\[
+\mathfrak{c} = (p, v, \xi)
+\]
+equipped with a stability score $S(\mathfrak{c}) \in \mathbb{R}_{\ge 0}$.
+\end{definition}
+
+\begin{definition}
+The \emph{global stability metric} is
+\[
+S(p,v,\xi)
+= \alpha \|\xi\|
++ \beta\, d_G(v, v_0)
++ \gamma\, d_\M(p, p_0)
++ \delta(p,v)
+\]
+where $\delta(p,v)$ is the collapse drift score and
+$\alpha,\beta,\gamma > 0$ are stability weights.
+\end{definition}
+
+\begin{lemma}
+If drift and collapse scores are stable, then $S$ is Lipschitz:
+\[
+|S(p,v,\xi) - S(q,w,\eta)|
+\le C \big( d_\M(p,q) + d_G(v,w) + \|\xi - \eta\| \big).
+\]
+\end{lemma}
+
+\begin{remark}
+The global stability metric aggregates geometric, spectral, discrete, and
+collapse-aware signals.
+\end{remark}
+
+\subsection{Spectral--Geometric Stability Fusion}
+
+\begin{definition}
+Let $S_t = e^{-t\Delta}$ be spectral smoothing and $P_{\gamma_{p,v}}$ be
+geometric parallel transport.  
+The \emph{spectral--geometric stabilizer} is
+\[
+\mathcal{S}_{\Lambda}(p,v,\xi)
+= \big( P_{\gamma_{p,v}}(p),\ v,\ S_t(\xi) \big).
+\]
+\end{definition}
+
+\begin{lemma}
+If curvature is bounded and $t > 0$, then
+\[
+S(\mathcal{S}_{\Lambda}(p,v,\xi))
+\le S(p,v,\xi).
+\]
+\end{lemma}
+
+\begin{remark}
+Spectral smoothing reduces high-frequency instability; geometric transport
+reduces drift accumulation.
+\end{remark}
+
+\subsection{Drift-Aware Runtime Control}
+
+\begin{definition}
+Let $\mathcal{D}_\M$ and $\mathcal{D}_\Lambda$ be geometric and spectral drift.
+The \emph{drift-aware stabilizer} is
+\[
+\mathcal{S}^\mathrm{drift}(p,v,\xi)
+= \mathcal{S}_{\Lambda}(p,v,\xi)
+- \alpha' \mathcal{D}_\M(p,v)
+- \beta' \mathcal{D}_\Lambda(p,v),
+\]
+where $\alpha',\beta' > 0$ are drift compensation parameters.
+\end{definition}
+
+\begin{lemma}
+If drift is stable, then
+\[
+S(\mathcal{S}^\mathrm{drift}(p,v,\xi))
+\le S(p,v,\xi).
+\]
+\end{lemma}
+
+\begin{remark}
+Drift-aware control prevents hybrid distortion from accumulating across
+runtime transitions.
+\end{remark}
+
+\subsection{Collapse-Safe Stabilization}
+
+\begin{definition}
+Let $\mathcal{A}$ be the collapse--avoidance operator.  
+The \emph{collapse-safe stabilizer} is
+\[
+\mathcal{S}^\mathrm{safe}(p,v,\xi)
+= \mathcal{A}\big( \mathcal{S}^\mathrm{drift}(p,v,\xi) \big).
+\]
+\end{definition}
+
+\begin{lemma}
+If $\mathcal{A}$ steers away from collapse surfaces, then
+\[
+\mathcal{S}^\mathrm{safe}(p,v,\xi)
+\notin \mathcal{C}_\M \times C.
+\]
+\end{lemma}
+
+\begin{remark}
+Collapse-safe stabilization prevents runtime transitions from entering
+unstable geometric or discrete regions.
+\end{remark}
+
+\subsection{Runtime Stability Operator}
+
+\begin{definition}
+The \emph{runtime stability operator} is the composite
+\[
+\mathcal{R}
+= \mathcal{S}^\mathrm{safe}
+= \mathcal{A} \circ \mathcal{S}^\mathrm{drift}
+= \mathcal{A} \circ \big( \mathcal{S}_{\Lambda}
+- \alpha' \mathcal{D}_\M
+- \beta' \mathcal{D}_\Lambda \big).
+\]
+Explicitly,
+\[
+\mathcal{R}(p,v,\xi)
+= \mathcal{A}\Big(
+P_{\gamma_{p,v}}(p),\,
+v,\,
+S_t(\xi)
+- \alpha' \mathcal{D}_\M(p,v)
+- \beta' \mathcal{D}_\Lambda(p,v)
+\Big).
+\]
+\end{definition}
+
+\begin{lemma}
+Each component reduces instability, hence $\mathcal{R}$ is stability
+non-increasing:
+\[
+S(\mathcal{R}(p,v,\xi)) \le S(p,v,\xi).
+\]
+\end{lemma}
+
+\begin{theorem}
+If spectral smoothing, geometric transport, drift compensation, and
+collapse avoidance are stable, then the runtime stability operator satisfies
+\[
+\| \mathcal{R}(p,v,\xi) - \mathcal{R}(q,w,\eta) \|
+\le C \big( d_\M(p,q) + d_G(v,w) + \|\xi - \eta\| \big).
+\]
+\end{theorem}
+
+\begin{lemma}
+If $H$ is holonomy consistent, then $\mathcal{R}$ preserves hybrid holonomy
+invariants.
+\end{lemma}
+
+\begin{remark}
+This operator is the global stabilizer for structural AI systems, ensuring
+safe, coherent, drift-controlled runtime behavior.
+\end{remark}
+
+\section{Full AI Runtime Operator}
+
+\subsection{Runtime Pipeline}
+
+\begin{definition}
+A \emph{runtime pipeline} is an ordered tuple of operators
+\[
+\mathcal{P}
+= \big( T_H^\mathrm{safe},\ \mathcal{L},\ \mathcal{I}_k^\mathrm{drift},\ \mathcal{R} \big)
+\]
+consisting of
+\begin{enumerate}
+    \item collapse-safe context transport $T_H^\mathrm{safe}$,
+    \item cognitive load stabilizer $\mathcal{L}$,
+    \item collapse-safe context integrator $\mathcal{I}_k^\mathrm{drift}$,
+    \item runtime stability operator $\mathcal{R}$.
+\end{enumerate}
+\end{definition}
+
+\begin{lemma}
+If each operator in $\mathcal{P}$ is stable, then the pipeline is stable.
+\end{lemma}
+
+\begin{remark}
+The runtime pipeline is the ordered execution of all AI-operators.
+\end{remark}
+
+\subsection{Pipeline Composition}
+
+\begin{definition}
+The \emph{pipeline composition operator} is
+\[
+\mathcal{P}^\circ
+= \mathcal{R} \circ \mathcal{I}_k^\mathrm{drift}
+\circ \mathcal{L} \circ T_H^\mathrm{safe}.
+\]
+\end{definition}
+
+\begin{lemma}
+Pipeline composition is associative:
+\[
+\mathcal{R} \circ (\mathcal{I}_k^\mathrm{drift} \circ \mathcal{L})
+= (\mathcal{R} \circ \mathcal{I}_k^\mathrm{drift}) \circ \mathcal{L}.
+\]
+\end{lemma}
+
+\begin{remark}
+This associativity ensures that runtime execution order is well-defined.
+\end{remark}
+
+\subsection{Holonomy-Consistent Runtime}
+
+\begin{definition}
+A runtime pipeline is \emph{holonomy consistent} if
+\[
+\mathcal{P}^\circ(\Delta_\iota(v))
+= \Delta_\iota(H_G(v))
+\]
+for all $v \in V$.
+\end{definition}
+
+\begin{lemma}
+If each operator in $\mathcal{P}$ preserves hybrid holonomy invariants,
+then the full runtime operator is holonomy consistent.
+\end{lemma}
+
+\begin{theorem}
+If $H$ is holonomy consistent, then
+\[
+\Hol_{\mathcal{P}^\circ}(p,v)
+= \Hol_H(p,v).
+\]
+\end{theorem}
+
+\begin{remark}
+Holonomy consistency ensures that runtime execution respects geometric and
+spectral parallel transport.
+\end{remark}
+
+\subsection{Collapse-Safe Runtime Execution}
+
+\begin{definition}
+A runtime pipeline is \emph{collapse safe} if
+\[
+\mathcal{P}^\circ(p,v,\xi)
+\notin \mathcal{C}_\M \times C
+\]
+for all $(p,v,\xi)$.
+\end{definition}
+
+\begin{lemma}
+If $T_H^\mathrm{safe}$ and $\mathcal{R}$ are collapse safe, then
+$\mathcal{P}^\circ$ is collapse safe.
+\end{lemma}
+
+\begin{theorem}
+If collapse drift score diverges near collapse surfaces, then
+\[
+\mathcal{P}^\circ(p,v,\xi)
+\notin \mathcal{C}_\M \times C
+\]
+for all sufficiently small stabilization parameters.
+\end{theorem}
+
+\begin{remark}
+Collapse-safe execution prevents runtime instability and structural failure.
+\end{remark}
+
+\subsection{Drift-Aware Runtime Execution}
+
+\begin{definition}
+Let $\mathcal{D}_\M$ and $\mathcal{D}_\Lambda$ be geometric and spectral drift.
+The \emph{drift-aware runtime operator} is
+\[
+\mathcal{P}^\mathrm{drift}
+= \mathcal{P}^\circ
+- \alpha' \mathcal{D}_\M
+- \beta' \mathcal{D}_\Lambda.
+\]
+\end{definition}
+
+\begin{lemma}
+If drift is stable, then
+\[
+\| \mathcal{P}^\mathrm{drift} - \mathcal{P}^\circ \|
+\le C (\alpha' + \beta').
+\]
+\end{lemma}
+
+\begin{remark}
+Drift-aware runtime execution compensates for accumulated hybrid distortion.
+\end{remark}
+
+\subsection{Full AI Runtime Operator}
+
+\begin{definition}
+The \emph{full AI runtime operator} is
+\[
+\mathcal{U}
+= \mathcal{P}^\mathrm{drift}
+= \mathcal{R} \circ \mathcal{I}_k^\mathrm{drift}
+\circ \mathcal{L} \circ T_H^\mathrm{safe}
+- \alpha' \mathcal{D}_\M
+- \beta' \mathcal{D}_\Lambda.
+\]
+Explicitly,
+\[
+\mathcal{U}(p,v,\xi)
+= \mathcal{A}\Big(
+P_{\gamma_{p,v}}(p),\,
+H_G(v),\,
+S_t(\xi)
+- \alpha' \mathcal{D}_\M(p,v)
+- \beta' \mathcal{D}_\Lambda(p,v)
+\Big)
+\]
+with integrated context and load stabilization applied internally.
+\end{definition}
+
+\begin{lemma}
+Each component reduces instability, hence $\mathcal{U}$ is stability
+non-increasing:
+\[
+S(\mathcal{U}(p,v,\xi)) \le S(p,v,\xi).
+\]
+\end{lemma}
+
+\begin{theorem}
+If all operators in the pipeline are stable, then the full AI runtime
+operator satisfies
+\[
+\| \mathcal{U}(p,v,\xi) - \mathcal{U}(q,w,\eta) \|
+\le C \big( d_\M(p,q) + d_G(v,w) + \|\xi - \eta\| \big).
+\]
+\end{theorem}
+
+\begin{lemma}
+If $H$ is holonomy consistent, then $\mathcal{U}$ preserves hybrid holonomy
+invariants.
+\end{lemma}
+
+\begin{remark}
+This operator is the complete structural-AI runtime engine: collapse-safe,
+drift-aware, holonomy-consistent, spectrally stable, and geometrically
+coherent.
+\end{remark}
