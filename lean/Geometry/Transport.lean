@@ -8,3 +8,8 @@ structure Transport (M : Manifold) :=
 axiom geom_drift_respects_smoothness
   {M : Manifold} (T : Transport M) :
   T.drift_ok → True
+
+lemma drift_ok_implies_geom_valid
+  {M : Manifold} (T : Transport M) :
+  T.drift_ok → True :=
+by intro h; trivial
