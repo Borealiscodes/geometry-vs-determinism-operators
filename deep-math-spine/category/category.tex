@@ -1,0 +1,68 @@
+% ------------------------------------------------------------
+% Category-Theoretic Mode Switching Module
+% Deep Mathematical Spine for Structural AI Operators
+% ------------------------------------------------------------
+
+\section{Category-Theoretic Mode Switching}
+
+\subsection{Categories}
+\begin{definition}
+A \emph{category} $\mathcal{C}$ consists of a class of objects
+$\mathrm{Ob}(\mathcal{C})$, a class of morphisms
+$\mathrm{Hom}_{\mathcal{C}}(A,B)$ for each pair of objects
+$A,B \in \mathrm{Ob}(\mathcal{C})$, and composition laws satisfying
+associativity and identity axioms.
+\end{definition}
+
+% Placeholder for examples: geometric category, spectral category, discrete category
+
+\subsection{Functors}
+\begin{definition}
+A \emph{functor} $F : \mathcal{C} \to \mathcal{D}$ assigns to each object
+$A \in \mathcal{C}$ an object $F(A) \in \mathcal{D}$ and to each morphism
+$f : A \to B$ a morphism $F(f) : F(A) \to F(B)$, preserving identities and
+composition.
+\end{definition}
+
+% Placeholder for geometry → discrete functor, discrete → geometry reconstruction functor
+
+\subsection{Faithfulness and Fullness}
+\begin{definition}
+A functor $F : \mathcal{C} \to \mathcal{D}$ is \emph{faithful} if for all
+objects $A,B \in \mathcal{C}$, the induced map
+\[
+F : \mathrm{Hom}_{\mathcal{C}}(A,B) \to \mathrm{Hom}_{\mathcal{D}}(F(A),F(B))
+\]
+is injective.
+\end{definition}
+
+\begin{definition}
+A functor is \emph{full} if the same map is surjective.
+\end{definition}
+
+% Placeholder for non-faithful and non-full functors in structural AI
+
+\subsection{Adjunctions}
+\begin{definition}
+An \emph{adjunction} between categories $\mathcal{C}$ and $\mathcal{D}$
+consists of functors $F : \mathcal{C} \to \mathcal{D}$ and
+$G : \mathcal{D} \to \mathcal{C}$ together with natural transformations
+forming a bijection
+\[
+\mathrm{Hom}_{\mathcal{D}}(F(A),B) \cong \mathrm{Hom}_{\mathcal{C}}(A,G(B))
+\]
+natural in $A$ and $B$.
+\end{definition}
+
+% Placeholder for collapse-preserving adjunctions, reconstruction adjunctions
+
+\subsection{Collapse-Preserving Functors}
+% Placeholder for your formal definition of collapse-preserving functors,
+% invariants, and structural constraints
+
+\subsection{Mode Switching Between Domains}
+% Placeholder for geometry ↔ spectral ↔ discrete mode-switching operators
+% and their categorical interpretation
+
+\subsection{Notes}
+\input{category-notes.tex}
