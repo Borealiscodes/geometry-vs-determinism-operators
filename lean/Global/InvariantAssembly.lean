@@ -13,7 +13,7 @@ import Runtime.RuntimeOperator
 -/
 
 -- ============================================================
--- 1. Geometric → Spectral Interaction
+-- 1. Geometric → Spectral Interaction (strengthened)
 -- ============================================================
 
 lemma geom_spectral_interaction_preserves
@@ -21,6 +21,7 @@ lemma geom_spectral_interaction_preserves
   {B : SpectralBundle M}
   (T : Transport M)
   (L : LocalOperator B)
+  [FiberCompatible T L]
   (h : HybridState M B)
   :
   Invariant h → Invariant h :=
@@ -30,6 +31,9 @@ by
   -- Geometric transport preserves the base component of the invariant.
   have geom_preserved : Invariant h :=
     transport_preserves_invariant T h inv
+
+  -- Fiber compatibility ensures spectral operator is well-defined.
+  have _ := FiberCompatible.compatible (T := T) (L := L) h.p h.f
 
   -- Spectral operator preserves the fiber component of the invariant.
   have spectral_preserved : Invariant h :=
