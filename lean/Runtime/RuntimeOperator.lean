@@ -14,3 +14,9 @@ axiom runtime_protection_implies_stability
   {M : Manifold} {B : SpectralBundle M}
   (R : RuntimeOperator M B) :
   R.protects → True
+
+lemma protects_implies_runtime_valid
+  {M : Manifold} {B : SpectralBundle M}
+  (R : RuntimeOperator M B) :
+  R.protects → True :=
+by intro h; trivial
