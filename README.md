@@ -73,7 +73,7 @@ This is where the real structural‑AI machinery lives.
 ---
 
 🗂️ Repository Layout
-
+<pre>
 `
 geometry-vs-determinism-operators/
 │
@@ -93,7 +93,7 @@ geometry-vs-determinism-operators/
 ├── README.md
 └── LICENSE
 `
-
+</pre>
 ---
 
 📐 Advanced Mathematics (Complete Formal Section)
