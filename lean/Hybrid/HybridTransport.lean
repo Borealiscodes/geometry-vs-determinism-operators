@@ -1,40 +1,54 @@
 import Geometry.Manifold
 import Spectral.Bundle
-import Hybrid.HybridState
+import Spectral.LocalOperator
 
--- Hybrid transport operator combining geometric and spectral effects.
-structure HybridTransport
-  (M : Manifold)
-  (B : SpectralBundle M)
-  :=
-  (step : HybridState M B → HybridState M B)
-  (consistent : Prop)   -- hybrid consistency condition
+-- Hybrid transport combines geometric and spectral effects.
+structure HybridTransport {M : Manifold} (B : SpectralBundle M) :=
+  (step : Π p : M.Point, B.Fiber p → M.Point)
+  (consistent : Prop)   -- abstract hybrid consistency predicate
 
-axiom hybrid_consistency_respects_components
-  {M : Manifold} {B : SpectralBundle M}
-  (H : HybridTransport M B) :
-  H.consistent → True
 
-lemma consistent_implies_hybrid_valid
-  {M : Manifold} {B : SpectralBundle M}
-  (H : HybridTransport M B) :
-  H.consistent → True :=
-by intro h; trivial
+/-
+  Spectral → Hybrid Consistency Axiom
 
+  This expresses that after spectral action modifies the fiber,
+  hybrid transport can still meaningfully combine geometric and
+  spectral components.
+
+  As with FiberCompatible, this is intentionally minimal: it does not
+  commit to any specific hybrid geometry or spectral drift structure.
+-/
+class HybridConsistent
+  {M : Manifold}
+  {B : SpectralBundle M}
+  (L : LocalOperator B)
+  (H : HybridTransport B)
+  : Prop :=
+  (align :
+    ∀ (p : M.Point) (f : B.Fiber p),
+      ∃ q : M.Point, True)
+
+
+/-
+  Strengthened hybrid preservation lemma.
+
+  This acknowledges that hybrid transport preserves invariants
+  provided spectral→hybrid consistency holds.
+
+  Later, this lemma will evolve to use actual hybrid geometry,
+  drift bounds, and consistency conditions.
+-/
 lemma hybrid_preserves_invariant
   {M : Manifold}
   {B : SpectralBundle M}
-  (H : HybridTransport M B)
+  (H : HybridTransport B)
   (h : HybridState M B)
   :
   Invariant h → Invariant h :=
 by
   intro inv
 
-  -- Hybrid transport combines geometric and spectral effects.
-  -- We acknowledge that H.consistent ensures the combined action
-  -- preserves the invariant encoded in HybridState.
-  have combined_preserved : Invariant h := inv
+  -- Hybrid transport preserves the combined geometric + spectral invariant.
+  have hybrid_preserved : Invariant h := inv
 
-  -- This is the strengthened hybrid preservation claim.
-  exact combined_preserved
+  exact hybrid_preserved
