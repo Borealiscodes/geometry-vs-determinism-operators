@@ -3,64 +3,645 @@
 % Deep Mathematical Spine for Structural AI Operators
 % ------------------------------------------------------------
 
-\section{Spectral Geometry Foundations}
+\section{Laplace--Beltrami Operator}
 
-\subsection{Laplace--Beltrami Operator}
+\subsection{Gradient and Divergence}
+
 \begin{definition}
-Let $(\M, g)$ be a smooth Riemannian manifold.  
+Let $(\M,g)$ be a Riemannian manifold.  
+For a smooth function $f : \M \to \mathbb{R}$, the \emph{gradient} of $f$
+is the vector field $\nabla f$ defined by
+\[
+g(\nabla f, X) = X(f)
+\]
+for all vector fields $X$.
+\end{definition}
+
+\begin{definition}
+For a vector field $X$, the \emph{divergence} is
+\[
+\mathrm{div}(X)
+= \mathrm{tr}\big(Y \mapsto \nabla_Y X\big),
+\]
+where the trace is taken with respect to any orthonormal frame.
+\end{definition}
+
+\begin{lemma}
+If $\{e_i\}$ is an orthonormal frame, then
+\[
+\mathrm{div}(X) = \sum_{i=1}^n g(\nabla_{e_i} X, e_i).
+\]
+\end{lemma}
+
+\subsection{Definition of the Laplace--Beltrami Operator}
+
+\begin{definition}
 The \emph{Laplace--Beltrami operator} acting on smooth functions
-$f \in C^\infty(\M)$ is defined by
+$f : \M \to \mathbb{R}$ is defined by
 \[
 \Delta f = \mathrm{div}(\nabla f).
 \]
 \end{definition}
 
-% Placeholder for coordinate expression, divergence, gradient, metric form
-
-\subsection{Eigenfunctions and Eigenvalues}
-\begin{definition}
-A function $\phi \in C^\infty(\M)$ is a \emph{Laplace--Beltrami eigenfunction}
-with eigenvalue $\lambda \in \mathbb{R}$ if
+\begin{lemma}
+In local coordinates $\{x^i\}$ with metric tensor $g_{ij}$ and inverse
+$g^{ij}$,
 \[
-\Delta \phi = \lambda \phi.
+\Delta f
+= \frac{1}{\sqrt{|g|}}
+\partial_i\!\left( \sqrt{|g|}\, g^{ij} \partial_j f \right),
+\]
+where $|g| = \det(g_{ij})$.
+\end{lemma}
+
+\subsection{Self-Adjointness}
+
+\begin{theorem}
+The Laplace--Beltrami operator is formally self-adjoint:
+\[
+\int_\M (\Delta f)\, h \, d\mathrm{vol}
+= \int_\M g(\nabla f, \nabla h)\, d\mathrm{vol}
+= \int_\M f\, (\Delta h)\, d\mathrm{vol},
+\]
+for all compactly supported smooth functions $f,h$.
+\end{theorem}
+
+\begin{proof}[Sketch]
+Integration by parts and the divergence theorem yield
+\[
+\int_\M (\Delta f)\, h\, d\mathrm{vol}
+= -\int_\M g(\nabla f, \nabla h)\, d\mathrm{vol},
+\]
+and symmetry follows by exchanging $f$ and $h$.
+\end{proof}
+
+\subsection{Spectral Theorem (Setup)}
+
+\begin{definition}
+Let $L^2(\M)$ be the space of square-integrable functions on $\M$.  
+The Laplace--Beltrami operator extends to an unbounded self-adjoint
+operator on $L^2(\M)$ with domain $H^2(\M)$.
+\end{definition}
+
+\begin{theorem}[Spectral Theorem for $\Delta$]
+If $\M$ is compact, the spectrum of $-\Delta$ consists of a discrete,
+nonnegative sequence
+\[
+0 = \lambda_0 < \lambda_1 \le \lambda_2 \le \cdots \to \infty,
+\]
+with corresponding eigenfunctions $\{\phi_k\}$ forming an orthonormal
+basis of $L^2(\M)$.
+\end{theorem}
+
+\begin{lemma}
+The constant functions are precisely the eigenfunctions associated with
+$\lambda_0 = 0$.
+\end{lemma}
+
+\subsection{Energy Interpretation}
+
+\begin{definition}
+The \emph{Dirichlet energy} of a function $f$ is
+\[
+E(f) = \int_\M \|\nabla f\|^2\, d\mathrm{vol}.
 \]
 \end{definition}
 
-% Placeholder for spectral decomposition, orthonormal basis, Weyl law
-
-\subsection{Spectral Gap}
-\begin{definition}
-The \emph{spectral gap} of $\M$ is the difference between the first two
-distinct eigenvalues of the Laplace--Beltrami operator:
+\begin{lemma}
+Eigenfunctions of $-\Delta$ minimize Dirichlet energy subject to
+orthogonality constraints:
 \[
-\gamma = \lambda_1 - \lambda_0.
+E(\phi_k) = \lambda_k.
+\]
+\end{lemma}
+
+\begin{remark}
+This energy interpretation is the foundation for spectral smoothing
+operators in the AI-operators module.
+\end{remark}
+
+\section{Heat Kernel and Semigroup}
+
+\subsection{Heat Equation}
+
+\begin{definition}
+Let $(\M,g)$ be a Riemannian manifold.  
+The \emph{heat equation} for a time-dependent function $u : \M \times (0,\infty) \to \mathbb{R}$ is
+\[
+\frac{\partial u}{\partial t} = \Delta u.
 \]
 \end{definition}
 
-% Placeholder for geometric meaning, stability, curvature relations
+\begin{lemma}
+If $u(t)$ solves the heat equation, then the Dirichlet energy satisfies
+\[
+\frac{d}{dt} E(u(t)) = -2 \int_\M (\Delta u(t))^2\, d\mathrm{vol} \le 0.
+\]
+\end{lemma}
+
+\begin{remark}
+Heat flow monotonically decreases energy, forming the basis of spectral smoothing.
+\end{remark}
 
 \subsection{Heat Kernel}
+
 \begin{definition}
-The \emph{heat kernel} $K_t(x,y)$ is the fundamental solution to the heat
-equation
+The \emph{heat kernel} is the minimal fundamental solution
 \[
-\frac{\partial u}{\partial t} = \Delta u,
+K_t(x,y) : \M \times \M \times (0,\infty) \to \mathbb{R}
 \]
-satisfying $u(x,0) = f(x)$ and
+satisfying
 \[
-u(x,t) = \int_{\M} K_t(x,y) f(y) \, dy.
+\frac{\partial}{\partial t} K_t(x,y) = \Delta_x K_t(x,y),
+\qquad
+\lim_{t \to 0^+} K_t(x,y) = \delta_y(x).
 \]
 \end{definition}
 
-% Placeholder for short-time asymptotics, geometric dependence
+\begin{lemma}
+If $\M$ is compact, the heat kernel admits the spectral expansion
+\[
+K_t(x,y)
+= \sum_{k=0}^\infty e^{-\lambda_k t}\, \phi_k(x)\phi_k(y),
+\]
+where $\{\lambda_k,\phi_k\}$ are eigenpairs of $-\Delta$.
+\end{lemma}
+
+\subsection{Heat Semigroup}
+
+\begin{definition}
+The \emph{heat semigroup} is the family of operators
+\[
+(e^{-t\Delta} f)(x)
+= \int_\M K_t(x,y) f(y)\, d\mathrm{vol}(y).
+\]
+\end{definition}
+
+\begin{theorem}
+The heat semigroup satisfies:
+\begin{enumerate}
+    \item $e^{-0\Delta} = \mathrm{Id}$,
+    \item $e^{-(t+s)\Delta} = e^{-t\Delta} e^{-s\Delta}$,
+    \item $e^{-t\Delta}$ is a contraction on $L^2(\M)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{lemma}
+For each eigenfunction $\phi_k$,
+\[
+e^{-t\Delta} \phi_k = e^{-\lambda_k t} \phi_k.
+\]
+\end{lemma}
+
+\subsection{Short-Time Asymptotics}
+
+\begin{theorem}[Minakshisundaram–Pleijel Expansion]
+As $t \to 0^+$,
+\[
+K_t(x,y)
+= \frac{1}{(4\pi t)^{n/2}}
+\exp\!\left( -\frac{d(x,y)^2}{4t} \right)
+\left( a_0(x,y) + a_1(x,y)t + a_2(x,y)t^2 + \cdots \right),
+\]
+where $a_0(x,y) = 1$ and each $a_j$ depends smoothly on curvature.
+\end{theorem}
+
+\begin{lemma}
+If sectional curvature is bounded, then for sufficiently small $t$,
+\[
+K_t(x,y)
+\le C t^{-n/2} \exp\!\left( -\frac{d(x,y)^2}{5t} \right).
+\]
+\end{lemma}
+
+\subsection{Smoothing Bounds}
+
+\begin{theorem}
+For any $f \in L^2(\M)$,
+\[
+\| e^{-t\Delta} f \|_{H^k(\M)}
+\le C_{k,t} \|f\|_{L^2(\M)},
+\]
+where $C_{k,t}$ grows polynomially as $t \to 0^+$ and decays exponentially as $t \to \infty$.
+\end{theorem}
+
+\begin{lemma}
+If $f$ has zero mean, then
+\[
+\| e^{-t\Delta} f \|_{L^2}
+\le e^{-\lambda_1 t} \|f\|_{L^2},
+\]
+where $\lambda_1$ is the spectral gap.
+\end{lemma}
+
+\begin{remark}
+This exponential decay is the mathematical backbone of the spectral smoothing operator in the AI-operators module.
+\end{remark}
+
+
+\section{Eigenfunctions and Spectral Bundles}
+
+\subsection{Nodal Sets}
+
+\begin{definition}
+Let $\phi_k$ be an eigenfunction of $-\Delta$ with eigenvalue $\lambda_k$.
+The \emph{nodal set} of $\phi_k$ is
+\[
+N(\phi_k) = \{ x \in \M \mid \phi_k(x) = 0 \}.
+\]
+\end{definition}
+
+\begin{lemma}
+If $\lambda_k > 0$, then $N(\phi_k)$ has measure zero and is a smooth
+hypersurface away from a singular set of codimension at least $2$.
+\end{lemma}
+
+\begin{remark}
+Nodal sets encode geometric information about eigenfunctions and are
+important for spectral partitioning and hybrid operator localization.
+\end{remark}
+
+\subsection{Weyl Law}
+
+\begin{theorem}[Weyl Law]
+Let $(\M,g)$ be a compact Riemannian manifold of dimension $n$.  
+Then the eigenvalue counting function
+\[
+N(\lambda) = \#\{ k \mid \lambda_k \le \lambda \}
+\]
+satisfies
+\[
+N(\lambda)
+= \frac{\mathrm{vol}(\M)}{(4\pi)^{n/2} \Gamma(n/2 + 1)} \lambda^{n/2}
++ o(\lambda^{n/2})
+\]
+as $\lambda \to \infty$.
+\end{theorem}
+
+\begin{lemma}
+The asymptotic density of eigenvalues depends only on the volume of $\M$,
+not on curvature.
+\end{lemma}
+
+\subsection{Spectral Clusters}
+
+\begin{definition}
+For $\Lambda > 0$, the \emph{spectral cluster} at scale $\Lambda$ is
+\[
+E_\Lambda = \mathrm{span}\{ \phi_k \mid \lambda_k \in [\Lambda, \Lambda + \delta] \},
+\]
+where $\delta$ is a fixed spectral window.
+\end{definition}
+
+\begin{lemma}
+If curvature is bounded, then eigenfunctions in a fixed spectral cluster
+have uniformly bounded oscillation frequency:
+\[
+\|\nabla \phi_k\|_{L^2} \sim \sqrt{\lambda_k}.
+\]
+\end{lemma}
 
 \subsection{Spectral Bundles}
-% Placeholder for your definition of spectral bundles,
-% fiber structure, and operator-level meaning
 
-\subsection{Spectral-Duty Operators (Structural AI)}
-% Placeholder for formal definition of spectral-duty operators,
-% commutation relations, and runtime behavior
+\begin{definition}
+Let $\pi : \M \times \mathbb{R} \to \M$ be the projection.  
+The \emph{spectral bundle} at scale $\Lambda$ is the vector bundle
+\[
+\mathcal{B}_\Lambda = \bigcup_{x \in \M} E_\Lambda(x),
+\]
+where
+\[
+E_\Lambda(x) = \{ \phi(x) \mid \phi \in E_\Lambda \}.
+\]
+\end{definition}
 
-\subsection{Notes}
-\input{spectral-notes.tex}
+\begin{lemma}
+If $\M$ is compact, each $\mathcal{B}_\Lambda$ is a finite-rank smooth
+subbundle of the trivial bundle $\M \times \mathbb{R}^m$.
+\end{lemma}
+
+\begin{remark}
+Spectral bundles encode frequency-localized geometric information and
+serve as the spectral component of hybrid operators.
+\end{remark}
+
+\subsection{Geometric Dependence of Eigenfunctions}
+
+\begin{theorem}
+Let $\phi_k$ be an eigenfunction of $-\Delta$.  
+Then the variation of $\phi_k$ under a metric perturbation $g \mapsto g+h$
+satisfies
+\[
+\delta \lambda_k
+= -\int_\M \langle h, \nabla \phi_k \otimes \nabla \phi_k \rangle
+\, d\mathrm{vol}
++ \frac{\lambda_k}{2} \int_\M \mathrm{tr}(h)\, \phi_k^2\, d\mathrm{vol}.
+\]
+\end{theorem}
+
+\begin{lemma}
+Eigenfunctions are stable under small curvature perturbations:
+\[
+\|\phi_k^{(g+h)} - \phi_k^{(g)}\|_{L^2}
+\le C \|h\|_{C^2}.
+\]
+\end{lemma}
+
+\subsection{Bundle Transport}
+
+\begin{definition}
+Let $\gamma$ be a smooth curve in $\M$.  
+The \emph{spectral bundle transport} along $\gamma$ is the map
+\[
+T_\gamma : \mathcal{B}_\Lambda(\gamma(0)) \to \mathcal{B}_\Lambda(\gamma(1))
+\]
+defined by parallel transport of eigenfunctions restricted to the cluster
+$E_\Lambda$.
+\end{definition}
+
+\begin{lemma}
+If curvature is bounded, then spectral bundle transport satisfies
+\[
+\|T_\gamma - \mathrm{Id}\|
+\le C \cdot \mathrm{length}(\gamma).
+\]
+\end{lemma}
+
+\begin{remark}
+This transport operator is the spectral component of the hybrid
+transition operator defined in the hybrid module.
+\end{remark}
+
+\section{Spectral Smoothing Operators}
+
+\subsection{Semigroup-Based Smoothing}
+
+\begin{definition}
+Let $(\M,g)$ be a compact Riemannian manifold.  
+The \emph{spectral smoothing operator} at scale $t > 0$ is
+\[
+S_t = e^{-t\Delta}.
+\]
+\end{definition}
+
+\begin{lemma}
+$S_t$ is a bounded linear operator on $L^2(\M)$ satisfying
+\[
+\|S_t f\|_{L^2} \le \|f\|_{L^2}.
+\]
+\]
+\end{lemma}
+
+\begin{theorem}
+For each eigenfunction $\phi_k$ of $-\Delta$,
+\[
+S_t \phi_k = e^{-\lambda_k t} \phi_k.
+\]
+\]
+\end{theorem}
+
+\begin{remark}
+High-frequency components decay exponentially, making $S_t$ a natural
+regularization operator for hybrid and AI-runtime systems.
+\end{remark}
+
+\subsection{Spectral Cutoff Smoothing}
+
+\begin{definition}
+Let $\Lambda > 0$.  
+The \emph{spectral cutoff operator} is
+\[
+C_\Lambda f = \sum_{\lambda_k \le \Lambda} \langle f, \phi_k \rangle \phi_k.
+\]
+\end{definition}
+
+\begin{lemma}
+$C_\Lambda$ is an orthogonal projection onto the finite-dimensional space
+\[
+E_{\le \Lambda} = \mathrm{span}\{\phi_k \mid \lambda_k \le \Lambda\}.
+\]
+\end{lemma}
+
+\begin{theorem}
+If $f \in H^s(\M)$, then
+\[
+\|f - C_\Lambda f\|_{L^2}
+\le C \Lambda^{-s/2} \|f\|_{H^s}.
+\]
+\end{theorem}
+
+\begin{remark}
+Cutoff smoothing is frequency-localized and forms the discrete spectral
+component of hybrid operators.
+\end{remark}
+
+\subsection{Curvature-Dependent Smoothing Bounds}
+
+\begin{lemma}
+If sectional curvature is bounded above by $k_2$, then for sufficiently
+small $t$,
+\[
+\|S_t f\|_{C^0}
+\le C t^{-n/4} \|f\|_{L^2}.
+\]
+\end{lemma}
+
+\begin{theorem}
+If Ricci curvature is bounded below by $-K$, then
+\[
+\|S_t f\|_{L^\infty}
+\le C e^{Kt} t^{-n/2} \|f\|_{L^1}.
+\]
+\end{theorem}
+
+\begin{remark}
+Curvature controls the rate at which smoothing spreads mass, linking
+spectral smoothing to geometric drift.
+\end{remark}
+
+\subsection{Operator Stability}
+
+\begin{definition}
+A smoothing operator $S$ is \emph{stable} if
+\[
+\|S f\|_{H^k} \le C \|f\|_{H^k}
+\]
+for all $k \ge 0$.
+\end{definition}
+
+\begin{lemma}
+Both $S_t$ and $C_\Lambda$ are stable smoothing operators.
+\end{lemma}
+
+\begin{theorem}
+If $g \mapsto g+h$ is a small metric perturbation, then
+\[
+\|S_t^{(g+h)} - S_t^{(g)}\|_{L^2 \to L^2}
+\le C \|h\|_{C^2}.
+\]
+\end{theorem}
+
+\begin{remark}
+This stability is essential for runtime operators that must remain
+consistent under small geometric or hybrid perturbations.
+\end{remark}
+
+\subsection{Hybrid Compatibility}
+
+\begin{definition}
+Let $H$ be a hybrid transition operator.  
+A spectral smoothing operator $S_t$ is \emph{hybrid compatible} if
+\[
+S_t H = H S_t
+\]
+on all spectral bundles $\mathcal{B}_\Lambda$.
+\end{definition}
+
+\begin{lemma}
+If $H$ preserves spectral clusters, then $S_t$ is hybrid compatible.
+\end{lemma}
+
+\begin{theorem}
+If hybrid transport is geometrically faithful to first order, then
+spectral smoothing commutes with hybrid transitions up to $O(t)$:
+\[
+S_t H - H S_t = O(t).
+\]
+\end{theorem}
+
+\begin{remark}
+This commutation relation is the spectral backbone of the hybrid
+spectral–duty operator in the hybrid module.
+\end{remark}
+
+\section{Spectral Gap and Stability}
+
+\subsection{Spectral Gap}
+
+\begin{definition}
+Let $(\M,g)$ be a compact Riemannian manifold.  
+The \emph{spectral gap} is the first positive eigenvalue of $-\Delta$:
+\[
+\lambda_1 = \min\{ \lambda_k \mid \lambda_k > 0 \}.
+\]
+\end{definition}
+
+\begin{lemma}
+If $\phi_0$ is the constant eigenfunction, then
+\[
+\lambda_1 = \inf_{f \perp \phi_0} 
+\frac{\int_\M \|\nabla f\|^2\, d\mathrm{vol}}
+     {\int_\M f^2\, d\mathrm{vol}}.
+\]
+\end{lemma}
+
+\begin{remark}
+The spectral gap controls the rate at which heat flow converges to its
+mean and is a key stability parameter for spectral smoothing operators.
+\end{remark}
+
+\subsection{Poincaré Inequality}
+
+\begin{theorem}[Poincaré Inequality]
+For all smooth functions $f$ with zero mean,
+\[
+\int_\M f^2\, d\mathrm{vol}
+\le \frac{1}{\lambda_1}
+\int_\M \|\nabla f\|^2\, d\mathrm{vol}.
+\]
+\end{theorem}
+
+\begin{lemma}
+The Poincaré inequality is equivalent to positivity of the spectral gap.
+\end{lemma}
+
+\subsection{Stability Bounds}
+
+\begin{definition}
+A function $f$ is \emph{spectrally stable} at scale $t$ if
+\[
+\| e^{-t\Delta} f - f \|_{L^2}
+\le C t.
+\]
+\end{definition}
+
+\begin{lemma}
+If $f$ lies in the low-frequency spectral cluster $E_{\le \Lambda}$, then
+\[
+\| e^{-t\Delta} f - f \|_{L^2}
+\le \Lambda t \|f\|_{L^2}.
+\]
+\end{lemma}
+
+\begin{theorem}
+If $\lambda_1 > 0$, then for all $f$ with zero mean,
+\[
+\| e^{-t\Delta} f \|_{L^2}
+\le e^{-\lambda_1 t} \|f\|_{L^2}.
+\]
+\]
+\end{theorem}
+
+\begin{remark}
+This exponential decay is the backbone of runtime stabilization in
+spectral-based AI operators.
+\end{remark}
+
+\subsection{Drift–Spectral Interaction}
+
+\begin{definition}
+Let $\mathcal{D}$ be the holonomy drift tensor.  
+The \emph{drift–spectral interaction operator} is
+\[
+\mathcal{S}_t = e^{-t\Delta} \circ \mathcal{D}.
+\]
+\end{definition}
+
+\begin{lemma}
+If curvature is bounded, then
+\[
+\| \mathcal{S}_t \|
+\le C t^{-n/2} \|\mathcal{D}\|.
+\]
+\end{lemma}
+
+\begin{theorem}
+If hybrid transport is geometrically faithful to first order, then
+\[
+\| e^{-t\Delta} \mathcal{D} - \mathcal{D} e^{-t\Delta} \|
+\le C t.
+\]
+\end{theorem}
+
+\begin{remark}
+This commutation relation is the spectral foundation of drift decomposition
+in the hybrid module.
+\end{remark}
+
+\subsection{Hybrid Spectral Stability}
+
+\begin{definition}
+Let $H$ be a hybrid transition operator.  
+The \emph{hybrid spectral stability constant} is
+\[
+\sigma(H) = \sup_{t > 0}
+\frac{\| e^{-t\Delta} H - H e^{-t\Delta} \|}{t}.
+\]
+\end{definition}
+
+\begin{lemma}
+If $H$ preserves spectral bundles, then $\sigma(H) < \infty$.
+\end{lemma}
+
+\begin{theorem}
+If $\sigma(H)$ is finite, then hybrid transitions are spectrally stable:
+\[
+\| e^{-t\Delta} H f - H e^{-t\Delta} f \|
+\le \sigma(H) t \|f\|.
+\]
+\end{theorem}
+
+\begin{remark}
+This stability condition is the spectral backbone of the hybrid
+spectral–duty operator defined in the hybrid module.
+\end{remark}
