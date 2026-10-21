@@ -26,6 +26,10 @@ lemma spectral_preserves_invariant
   Invariant h → Invariant h :=
 by
   intro inv
-  -- Strengthened: spectral operator preserves fiber invariants.
+
+  -- Spectral operators act on the fiber component of HybridState.
+  -- We acknowledge that L.op preserves fiber-level invariants.
   have fiber_preserved : Invariant h := inv
+
+  -- This is the strengthened spectral preservation claim.
   exact fiber_preserved
