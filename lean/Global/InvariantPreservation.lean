@@ -34,14 +34,13 @@ import Global.InvariantAssembly
 
     5. Runtime Preservation:
        - R.apply uses HybridTransport internally.
-       - Use R.protects to ensure that invariant-preserving behavior is maintained
+       - Use R.protects to ensure invariant-preserving behavior is maintained
          under iteration.
 
     6. Conclusion:
        - The invariant is preserved globally under R.apply.
 -/
 
--- Invariant preservation theorem scaffold.
 theorem invariant_preservation
   {M : Manifold}
   {B : SpectralBundle M}
@@ -50,23 +49,23 @@ theorem invariant_preservation
 by
   intro h inv
 
-  -- Step 1: geometric + spectral preservation
+  -- Step 1: geometric → spectral interaction
   have gs : Invariant h :=
-    geom_then_spectral_preserve
+    geom_spectral_interaction_preserves
       R.geom
       R.spec
       h
       inv
 
-  -- Step 2: spectral + hybrid preservation
+  -- Step 2: spectral → hybrid interaction
   have sh : Invariant h :=
-    spectral_then_hybrid_preserve
+    spectral_hybrid_interaction_preserves
       R.spec
       R.hyb
       h
       gs
 
-  -- Step 3: hybrid + runtime preservation
+  -- Step 3: hybrid → runtime preservation
   have hr : Invariant (R.apply h) :=
     hybrid_then_runtime_preserve
       R.hyb
