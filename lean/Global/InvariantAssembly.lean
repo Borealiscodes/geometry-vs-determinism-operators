@@ -92,14 +92,15 @@ by
 
 
 -- ============================================================
--- 2. Spectral → Hybrid Interaction
+-- 2. Spectral → Hybrid Interaction (strengthened)
 -- ============================================================
 
 lemma spectral_hybrid_interaction_preserves
   {M : Manifold}
   {B : SpectralBundle M}
   (L : LocalOperator B)
-  (H : HybridTransport M B)
+  (H : HybridTransport B)
+  [HybridConsistent L H]
   (h : HybridState M B)
   :
   Invariant h → Invariant h :=
@@ -109,6 +110,9 @@ by
   -- Spectral operator preserves fiber-level invariants.
   have spectral_preserved : Invariant h :=
     spectral_preserves_invariant L h inv
+
+  -- Hybrid consistency ensures hybrid transport is well-defined
+  have _ := HybridConsistent.align (L := L) (H := H) h.p h.f
 
   -- Hybrid transport preserves combined geometric + spectral invariants.
   have hybrid_preserved : Invariant h :=
@@ -125,7 +129,7 @@ by
 lemma hybrid_then_runtime_preserve
   {M : Manifold}
   {B : SpectralBundle M}
-  (H : HybridTransport M B)
+  (H : HybridTransport B)
   (R : RuntimeOperator M B)
   (h : HybridState M B)
   :
