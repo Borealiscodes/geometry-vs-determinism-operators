@@ -44,12 +44,7 @@ theorem invariant_preservation
   {M : Manifold}
   {B : SpectralBundle M}
   (R : RuntimeOperator M B)
-  : True :=
+  : PreservesInvariant R :=
 by
-  -- Step 1: Identify the invariant in HybridState.
-  -- Step 2: Show geometric transport preserves the base invariant.
-  -- Step 3: Show spectral operators preserve fiber invariants.
-  -- Step 4: Use hybrid consistency to combine geometric + spectral preservation.
-  -- Step 5: Use runtime protection to ensure preservation under iteration.
-  -- Step 6: Conclude global invariant preservation.
+  -- structured proof skeleton
   admit
