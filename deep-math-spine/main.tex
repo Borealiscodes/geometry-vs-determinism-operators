@@ -1,69 +1,487 @@
 \documentclass[11pt]{article}
 
-% ------------------------------------------------------------
+% -------------------------------------------------
 % Packages
-% ------------------------------------------------------------
+% -------------------------------------------------
 \usepackage{amsmath, amssymb, amsthm}
-\usepackage{geometry}
+\usepackage{graphicx}
 \usepackage{hyperref}
-\usepackage{enumitem}
-
-% Page geometry
+\usepackage{geometry}
 \geometry{margin=1in}
 
-% ------------------------------------------------------------
-% Global Notation
-% ------------------------------------------------------------
-\input{appendix/notation.tex}
-
-% ------------------------------------------------------------
-% Theorem Environments
-% ------------------------------------------------------------
-\newtheorem{definition}{Definition}[section]
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{lemma}{Lemma}[section]
-\newtheorem{proposition}{Proposition}[section]
-\newtheorem{corollary}{Corollary}[section]
-
-% ------------------------------------------------------------
-% Document Start
-% ------------------------------------------------------------
-\begin{document}
-
-\title{Deep Mathematical Spine for Structural AI Operators}
+% -------------------------------------------------
+% Title
+% -------------------------------------------------
+\title{Structural AI: Geometric--Spectral--Hybrid Runtime Architecture}
 \author{Borealis S. Hedling}
-\date{2026}
+\date{}
+
+\begin{document}
 \maketitle
 
-\tableofcontents
-\newpage
+% -------------------------------------------------
+% Abstract
+% -------------------------------------------------
+\begin{abstract}
+This document presents the full structural AI architecture, including
+geometric foundations, spectral bundle operators, hybrid transport,
+runtime operators, and global stability guarantees. All proofs are
+contained in the appendix.
+\end{abstract}
 
-% ------------------------------------------------------------
-% Core Mathematical Domains
-% ------------------------------------------------------------
+% -------------------------------------------------
+% 1. Introduction
+% -------------------------------------------------
+\section{Introduction}
 
-% Differential Geometry
-\input{geometry/geometry.tex}
+Modern AI systems increasingly rely on structured operators that combine
+geometric, spectral, and graph-based information. While these operators
+provide expressive power, they also introduce stability challenges:
+transport may drift, spectral structure may distort, and collapse surfaces
+may be approached during inference. Ensuring stability, consistency, and
+invariant preservation across all components of the system requires a
+coherent mathematical architecture.
 
-% Spectral Geometry
-\input{spectral/spectral.tex}
+This work presents a complete structural AI framework built on five
+modules: Geometry, Spectral, Hybrid, Runtime, and Global. Each module
+provides operators and guarantees that feed into the next, forming a
+spine of stability results. The geometric module establishes curvature-
+controlled transport on the underlying manifold. The spectral module
+introduces a smooth spectral bundle with Lipschitz-continuous eigenvalues
+and eigenvectors. The hybrid module fuses geometric, spectral, and
+graph-based structure into a unified transport operator. The runtime
+module defines the operator used during inference and proves its
+stability under iteration. Finally, the global module lifts runtime
+guarantees to infinite-horizon behavior.
 
-% Discrete Deterministic Systems
-\input{discrete/discrete.tex}
+The main contributions of this work are:
 
-% Category-Theoretic Mode Switching
-\input{category/category.tex}
+\begin{itemize}
+    \item A unified architecture combining geometric, spectral, and
+    graph-based transport.
+    \item A runtime operator that is stable, collapse-avoiding, and
+    invariant-preserving.
+    \item Global guarantees showing that the entire system remains stable
+    and consistent under all iterates.
+    \item A complete set of formal proofs, provided in the appendix,
+    establishing stability, invariant preservation, collapse-avoidance,
+    and spectral--geometric consistency.
+\end{itemize}
 
-% Hybrid Geometric–Discrete Operators
-\input{hybrid/hybrid.tex}
+The remainder of the paper is organized as follows. Section~2 introduces
+preliminaries and notation. Section~3 presents the system architecture.
+Section~4 states the main results. Section~5 provides case studies and
+examples. All proofs appear in the appendix.
 
-% AI-Supported Reasoning Operators
-\input{ai-operators/ai-operators.tex}
+% -------------------------------------------------
+% 2. Preliminaries
+% -------------------------------------------------
+\section{Preliminaries}
 
-% ------------------------------------------------------------
-% Appendix: Proofs and Extended Material
-% ------------------------------------------------------------
+This section introduces notation and basic structures used throughout the
+paper. We describe the underlying manifold, the graph structure, the
+spectral bundle, and the runtime state space. These components form the
+foundation on which the system architecture is built.
+
+\subsection{Manifold Structure}
+
+Let $\M$ be a smooth Riemannian manifold equipped with metric
+$d_\M(\cdot,\cdot)$ and Levi--Civita connection $\nabla$. Tangent vectors
+at $p \in \M$ lie in the tangent space $T_p\M$. Transport along curves
+$\gamma : [0,1] \to \M$ is performed using the geometric parallel
+transport operator $P_\M$, which satisfies curvature-controlled drift
+bounds.
+
+We use the notation
+\[
+P_\M^{p \to q}(v)
+\]
+to denote the parallel transport of $v \in T_p\M$ along a geodesic from
+$p$ to $q$.
+
+\subsection{Graph Structure}
+
+Let $G = (V,E)$ be a graph whose nodes correspond to points on the
+manifold or states in the system. The graph distance $d_G(\cdot,\cdot)$
+is defined as the shortest-path distance on $G$. Graph adjacency plays a
+role in hybrid transport, where local structure must be preserved under
+operator application.
+
+For a node $p \in V$, we denote its neighborhood by
+\[
+\mathcal{N}(p) = \{ q \in V : (p,q) \in E \}.
+\]
+
+\subsection{Spectral Bundle}
+
+The spectral module introduces a bundle $\mathcal{B}_\Lambda$ constructed
+from eigenvalues and eigenvectors of a local operator $L_p$ associated
+with each point $p \in \M$. Let
+\[
+L_p u_i(p) = \lambda_i(p) u_i(p)
+\]
+denote the eigenpairs. The spectral bundle is defined as
+\[
+\mathcal{B}_\Lambda(p)
+=
+\big( \lambda_1(p), \ldots, \lambda_k(p),
+      u_1(p), \ldots, u_k(p) \big),
+\]
+with smooth dependence on $p$.
+
+Spectral transport is performed by projecting vectors onto the local
+eigenbasis and adjusting coefficients according to spectral drift bounds.
+
+\subsection{Hybrid State Space}
+
+The hybrid module operates on pairs $(p,v)$ where $p \in \M$ and
+$v \in T_p\M$. This state space combines geometric position and tangent
+information with spectral and graph-based structure. Hybrid transport
+maps states to new states:
+\[
+T_{\mathrm{hyb}} : (p,v) \mapsto (q,w).
+\]
+
+The hybrid collapse-avoidance operator $\mathcal{C}_{\mathrm{hyb}}$
+provides divergence away from collapse surfaces, ensuring stability.
+
+\subsection{Runtime State Space}
+
+The runtime operator acts on the same state space:
+\[
+R : (p,v) \mapsto (q,w),
+\]
+and is defined as
+\[
+R(p,v)
+=
+T_{\mathrm{hyb}}(p,v)
++
+\mathcal{C}_{\mathrm{hyb}}(p,v).
+\]
+
+Distances between states are measured using the combined metric
+\[
+d\big((p,v),(q,w)\big)
+=
+d_\M(p,q) + d_G(v,w),
+\]
+which captures both geometric and graph-based variation.
+
+This metric is used throughout the stability and consistency analysis.
+
+% -------------------------------------------------
+% 3. System Architecture
+% -------------------------------------------------
+\section{System Architecture}
+
+This section presents the full structural AI architecture. The system is
+organized into five modules---Geometric, Spectral, Hybrid, Runtime, and
+Global---each responsible for a distinct aspect of stability, transport,
+and invariant preservation. The modules form a spine:
+
+\[
+\text{Geometry} \;\longrightarrow\; 
+\text{Spectral} \;\longrightarrow\;
+\text{Hybrid} \;\longrightarrow\;
+\text{Runtime} \;\longrightarrow\;
+\text{Global}.
+\]
+
+Each module provides operators and guarantees that feed into the next,
+culminating in global stability and consistency results.
+
+\subsection{Geometry Module}
+
+The geometric module defines transport on the underlying manifold $\M$.
+Its core operator is the geometric transport map $P_\M$, which moves
+tangent vectors along curves while respecting curvature bounds. The
+module provides:
+
+\begin{itemize}
+    \item Lipschitz continuity of geometric transport,
+    \item curvature-controlled drift bounds,
+    \item geometric collapse-avoidance via distance from singular sets.
+\end{itemize}
+
+These guarantees ensure that geometric transport is stable and
+well-behaved under perturbations.
+
+\subsection{Spectral Module}
+
+The spectral module introduces the spectral bundle $\mathcal{B}_\Lambda$,
+constructed from eigenvalues and eigenvectors of a local operator. The
+module provides:
+
+\begin{itemize}
+    \item Lipschitz continuity of eigenvalues and eigenvectors,
+    \item stability of the spectral gap,
+    \item smoothness of the spectral bundle,
+    \item spectral drift bounds under transport.
+\end{itemize}
+
+These results ensure that spectral structure varies smoothly across the
+manifold and remains stable under transport.
+
+\subsection{Hybrid Module}
+
+The hybrid module fuses geometric, spectral, and graph-based structure.
+Its core operator is the hybrid transport map $T_{\mathrm{hyb}}$, defined
+as a combination of geometric transport, spectral smoothing, and
+graph-based adjacency-preserving adjustments. The module also defines the
+hybrid collapse-avoidance operator $\mathcal{C}_{\mathrm{hyb}}$.
+
+The module provides:
+
+\begin{itemize}
+    \item hybrid drift decomposition,
+    \item hybrid collapse-avoidance divergence bounds,
+    \item adjacency preservation under hybrid transport,
+    \item spectral--geometric consistency at the hybrid level.
+\end{itemize}
+
+This module ensures that fused transport remains stable and respects both
+geometric and spectral structure.
+
+\subsection{Runtime Operator}
+
+The runtime operator is the operator actually applied during inference.
+It is defined as
+
+\[
+R(p,v)
+=
+T_{\mathrm{hyb}}(p,v)
++
+\mathcal{C}_{\mathrm{hyb}}(p,v).
+\]
+
+The runtime module provides:
+
+\begin{itemize}
+    \item runtime operator stability,
+    \item runtime collapse-avoidance,
+    \item runtime adjacency preservation,
+    \item runtime spectral--geometric consistency,
+    \item multi-step runtime stability under repeated application.
+\end{itemize}
+
+These guarantees ensure that inference-time transport is stable,
+consistent, and safe under iteration.
+
+\subsection{Global Guarantees}
+
+The global module lifts runtime guarantees to infinite-horizon behavior.
+It provides:
+
+\begin{itemize}
+    \item global stability under all iterates of $R$,
+    \item global invariant preservation,
+    \item global collapse-avoidance,
+    \item global spectral--geometric consistency.
+\end{itemize}
+
+Together, these results show that the entire system remains stable,
+consistent, and invariant-preserving for all time.
+
+% -------------------------------------------------
+% 4. Main Results
+% -------------------------------------------------
+\section{Main Results}
+
+This section presents the primary guarantees established by the system.
+Each result summarizes a stability, consistency, or invariant-preserving
+property of the operators defined in the architecture. Full proofs appear
+in the appendix.
+
+\subsection{Global Stability}
+
+\begin{theorem}[Global Stability]
+Let $R$ be the runtime operator and $R^k$ its $k$-fold composition. If $R$
+is Lipschitz with constant $L < 1$ and satisfies multi-step stability,
+then for all $k \in \mathbb{N}$,
+\[
+\|R^k(p,v) - R^k(q,w)\|
+\le
+C\big(d_\M(p,q) + d_G(v,w)\big),
+\]
+where $C = \frac{C_0}{1-L}$ and $C_0$ is the runtime stability constant.
+\end{theorem}
+
+This theorem shows that the entire system remains stable under repeated
+application of the runtime operator. Perturbations do not amplify, and
+trajectories remain bounded for all time.
+
+\subsection{Invariant Preservation}
+
+\begin{lemma}[Global Invariant Preservation]
+Let $I$ be any invariant satisfying $I(R(p,v)) = I(p,v)$ for all states.
+Then for all $k \in \mathbb{N}$,
+\[
+I(R^k(p,v)) = I(p,v).
+\]
+\end{lemma}
+
+This result ensures that spectral energy, geometric norms, hybrid
+adjacency, and other invariants remain unchanged under all iterates of
+the runtime operator.
+
+\subsection{Global Collapse-Avoidance}
+
+\begin{lemma}[Global Collapse-Avoidance]
+If the runtime operator satisfies $\operatorname{div}(R) \ge c > 0$ for
+all states, then
+\[
+\operatorname{dist}(R^k(p,v), \Sigma_{\mathrm{collapse}}) \ge c
+\quad\text{for all } k \in \mathbb{N}.
+\]
+\end{lemma}
+
+This lemma guarantees that trajectories remain safely away from collapse
+surfaces, preventing degeneracy, singularities, and structural failure.
+
+\subsection{Spectral--Geometric Consistency}
+
+\begin{lemma}[Global Spectral--Geometric Consistency]
+If runtime transport satisfies spectral--geometric consistency with
+deviation $O(\varepsilon)$, then globally,
+\[
+\langle \mathcal{B}_\Lambda(R^k(p)), R^k(v) \rangle
+=
+\langle \mathcal{B}_\Lambda(p), v \rangle
++ O(k\varepsilon).
+\]
+\end{lemma}
+
+This result shows that spectral alignment and geometric alignment remain
+consistent under all iterates of the runtime operator, with deviation
+growing at most linearly in the number of steps.
+
+Together, these results establish global stability, invariant
+preservation, collapse-avoidance, and spectral--geometric consistency for
+the entire system.
+
+% -------------------------------------------------
+% 5. Case Studies / Examples (optional)
+% -------------------------------------------------
+\section{Case Studies}
+
+This section provides illustrative examples demonstrating the behavior of
+the geometric, spectral, hybrid, and runtime operators. These examples
+are synthetic and designed to highlight the qualitative properties
+established by the main results.
+
+\subsection{Geometric Transport Example}
+
+Consider two nearby points $p,q \in \M$ connected by a geodesic
+$\gamma$. Let $v \in T_p\M$ be a tangent vector. Geometric transport
+moves $v$ along $\gamma$ using the parallel transport operator
+$P_\M^{p \to q}(v)$.
+
+Figure~\ref{fig:geom-transport} (conceptual) illustrates the behavior:
+the transported vector remains aligned with the geodesic direction and
+experiences curvature-controlled drift. The geometric Lipschitz bound
+ensures that small perturbations in $p$ or $v$ produce proportionally
+small changes in the transported vector.
+
+\subsection{Spectral Bundle Visualization}
+
+Let $L_p$ be a local operator with eigenpairs
+$(\lambda_i(p), u_i(p))$. As $p$ moves along a curve $\gamma$, the
+spectral bundle $\mathcal{B}_\Lambda(p)$ varies smoothly.
+
+A conceptual visualization is shown in Figure~\ref{fig:spectral-bundle}:
+eigenvalues evolve continuously, and eigenvectors rotate smoothly within
+their local subspaces. The spectral Lipschitz bound ensures that the
+bundle does not exhibit sudden jumps or discontinuities.
+
+\subsection{Hybrid Transport Example}
+
+Hybrid transport combines geometric transport, spectral smoothing, and
+graph-based adjacency preservation. Consider a state $(p,v)$ and its
+neighbors $\mathcal{N}(p)$ in the graph $G$.
+
+Hybrid transport produces a new state
+\[
+T_{\mathrm{hyb}}(p,v) = (q,w),
+\]
+where $q$ is influenced by geometric movement and graph adjacency, and
+$w$ is influenced by both geometric and spectral structure.
+
+Figure~\ref{fig:hybrid-transport} illustrates how hybrid transport
+smooths spectral coefficients while preserving geometric direction and
+graph connectivity. The hybrid drift decomposition ensures that each
+component of the transport is controlled.
+
+\subsection{Runtime Operator Trajectory}
+
+The runtime operator combines hybrid transport with collapse-avoidance:
+\[
+R(p,v) = T_{\mathrm{hyb}}(p,v) + \mathcal{C}_{\mathrm{hyb}}(p,v).
+\]
+
+Consider a trajectory generated by repeated application of $R$:
+\[
+(p_0,v_0),\;
+(p_1,v_1),\;
+(p_2,v_2),\;
+\ldots,\;
+(p_k,v_k),
+\quad
+(p_{i+1},v_{i+1}) = R(p_i,v_i).
+\]
+
+Figure~\ref{fig:runtime-trajectory} shows a conceptual trajectory. The
+global stability theorem ensures that the trajectory remains bounded.
+Global collapse-avoidance ensures that the trajectory stays away from
+collapse surfaces. Global spectral--geometric consistency ensures that
+spectral alignment and geometric alignment remain coherent throughout the
+trajectory.
+
+These examples illustrate how the operators behave in practice and how
+the theoretical guarantees manifest in transport, spectral evolution,
+hybrid fusion, and runtime dynamics.
+
+% -------------------------------------------------
+% 6. Conclusion
+% -------------------------------------------------
+\section{Conclusion}
+
+This work presents a complete structural AI framework built on geometric,
+spectral, hybrid, runtime, and global modules. Each module contributes a
+distinct stability or consistency guarantee, and together they form a
+coherent spine that ensures safe, stable, and invariant-preserving
+transport under all iterates of the runtime operator.
+
+The geometric module provides curvature-controlled transport and
+collapse-avoidance on the underlying manifold. The spectral module
+introduces a smooth spectral bundle with Lipschitz-continuous eigenvalues
+and eigenvectors. The hybrid module fuses geometric, spectral, and
+graph-based structure into a unified transport operator. The runtime
+module defines the operator used during inference and proves its
+stability under iteration. Finally, the global module lifts runtime
+guarantees to infinite-horizon behavior, establishing global stability,
+invariant preservation, collapse-avoidance, and spectral--geometric
+consistency.
+
+Together, these results show that the system remains stable and
+well-behaved for all time. The architecture provides a foundation for
+interpretable, structurally grounded AI systems and offers a pathway
+toward formal verification of transport-based inference mechanisms.
+
+Future work includes extending the spectral bundle to higher-order
+operators, incorporating stochastic transport, and exploring applications
+to geometric learning, structural interpretability, and hybrid
+manifold-graph models.
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
+% -------------------------------------------------
+% Appendix
+% -------------------------------------------------
 \appendix
+\section{Proofs}
 \input{appendix/proofs.tex}
 
 \end{document}
