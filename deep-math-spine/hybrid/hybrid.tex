@@ -1,0 +1,62 @@
+% ------------------------------------------------------------
+% Hybrid Geometric–Discrete Operators Module
+% Deep Mathematical Spine for Structural AI Operators
+% ------------------------------------------------------------
+
+\section{Hybrid Geometric–Discrete Operators}
+
+\subsection{Manifold–Graph Embeddings}
+\begin{definition}
+A \emph{manifold–graph embedding} is a pair
+\[
+(\iota, G)
+\]
+where $\iota : V(G) \to \M$ maps graph vertices into a smooth manifold
+$\M$, and edges correspond to geodesic or near-geodesic relations under
+$\iota$.
+\end{definition}
+
+% Placeholder for embedding stability, distortion bounds
+
+\subsection{Hybrid Transition Operators}
+\begin{definition}
+Given a manifold $\M$ and a discrete state graph $G$, a
+\emph{hybrid transition operator} $H$ acts on pairs $(p, q)$ where
+$p \in \M$ and $q \in V(G)$, producing
+\[
+H(p,q) = \big( \Phi(p,q),\; \delta(q,a) \big)
+\]
+for some geometric update rule $\Phi$ and discrete transition $\delta$.
+\end{definition}
+
+% Placeholder for operator chains, commutation relations
+
+\subsection{Holonomy Drift Tensor}
+\begin{definition}
+The \emph{holonomy drift tensor} $\mathcal{D}$ is a tensor field on $\M$
+capturing deviation between geometric parallel transport and hybrid
+transition-induced transport along embedded graph paths.
+\end{definition}
+
+% Placeholder for drift decomposition, stability, curvature dependence
+
+\subsection{Spectral–Duty Hybrid Operators}
+\begin{definition}
+A \emph{spectral–duty hybrid operator} combines spectral propagation on
+$\M$ with discrete duty-chain evolution on $G$, producing updates of the
+form
+\[
+S(p,q) = \big( e^{-t\Delta} p,\; T\mu(q) \big)
+\]
+where $e^{-t\Delta}$ is the heat semigroup and $T$ is a discrete
+transition operator.
+\end{definition}
+
+% Placeholder for commutation relations, hybrid stability bounds
+
+\subsection{Hybrid Stability Theorems}
+% Placeholder for your formal stability theorems,
+% bounded drift, collapse avoidance, and hybrid invariants
+
+\subsection{Notes}
+\input{hybrid-notes.tex}
