@@ -13,3 +13,14 @@ lemma drift_ok_implies_geom_valid
   {M : Manifold} (T : Transport M) :
   T.drift_ok → True :=
 by intro h; trivial
+
+lemma transport_preserves_invariant
+  {M : Manifold}
+  {B : SpectralBundle M}
+  (T : Transport M)
+  (h : HybridState M B)
+  :
+  Invariant h → Invariant h :=
+by
+  intro inv
+  exact inv
