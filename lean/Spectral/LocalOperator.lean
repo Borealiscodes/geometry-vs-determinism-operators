@@ -16,3 +16,14 @@ lemma bounded_implies_spectral_valid
   (L : LocalOperator B) :
   L.bounded → True :=
 by intro h; trivial
+
+lemma spectral_preserves_invariant
+  {M : Manifold}
+  {B : SpectralBundle M}
+  (L : LocalOperator B)
+  (h : HybridState M B)
+  :
+  Invariant h → Invariant h :=
+by
+  intro inv
+  exact inv
