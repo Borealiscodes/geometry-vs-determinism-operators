@@ -52,19 +52,19 @@ by
 
   -- Step 1: geometric + spectral preservation
   have gs := geom_then_spectral_preserve
-    (Transport M)
-    (LocalOperator B)
+    R.geom
+    R.spec
     h inv
 
   -- Step 2: spectral + hybrid preservation
   have sh := spectral_then_hybrid_preserve
-    (LocalOperator B)
-    (HybridTransport M B)
+    R.spec
+    R.hyb
     h gs
 
   -- Step 3: hybrid + runtime preservation
   have hr := hybrid_then_runtime_preserve
-    (HybridTransport M B)
+    R.hyb
     R
     h sh
 
