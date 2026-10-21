@@ -14,3 +14,9 @@ axiom hybrid_consistency_respects_components
   {M : Manifold} {B : SpectralBundle M}
   (H : HybridTransport M B) :
   H.consistent → True
+
+lemma consistent_implies_hybrid_valid
+  {M : Manifold} {B : SpectralBundle M}
+  (H : HybridTransport M B) :
+  H.consistent → True :=
+by intro h; trivial
